@@ -1,0 +1,20 @@
+- name: BBC News
+  url: https://www.bbc.com/news
+  description: International news coverage from a public broadcaster.
+  primary_category: News
+  lenses: [journalism]
+  quality: solid
+
+- name: The Guardian
+  url: https://www.theguardian.com
+  description: Independent journalism with a global focus.
+  primary_category: News
+  lenses: [journalism, open-access]
+  quality: solid
+
+- name: ProPublica
+  url: https://www.propublica.org
+  description: Investigative journalism in the public interest.
+  primary_category: News
+  lenses: [investigation]
+  quality: exceptional

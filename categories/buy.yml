@@ -1,0 +1,20 @@
+- name: Amazon
+  url: https://www.amazon.com
+  description: Global online marketplace for goods and digital products.
+  primary_category: Buy
+  lenses: [marketplace]
+  quality: solid
+
+- name: Bookshop.org
+  url: https://bookshop.org
+  description: Online bookstore supporting independent local bookshops.
+  primary_category: Buy
+  lenses: [ethical]
+  quality: exceptional
+
+- name: Etsy
+  url: https://www.etsy.com
+  description: Marketplace for handmade, vintage, and creative goods.
+  primary_category: Buy
+  lenses: [indie]
+  quality: solid

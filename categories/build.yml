@@ -1,0 +1,20 @@
+- name: freeCodeCamp
+  url: https://www.freecodecamp.org
+  description: Learn programming through interactive lessons and projects.
+  primary_category: Build
+  lenses: [education, free]
+  quality: exceptional
+
+- name: Instructables
+  url: https://www.instructables.com
+  description: Community-driven guides for DIY projects and making.
+  primary_category: Build
+  lenses: [diy]
+  quality: solid
+
+- name: GitHub
+  url: https://github.com
+  description: Platform for building, sharing, and collaborating on software.
+  primary_category: Build
+  lenses: [open-source]
+  quality: solid

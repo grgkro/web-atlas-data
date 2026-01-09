@@ -1,0 +1,20 @@
+- name: GeoGuessr
+  url: https://www.geoguessr.com
+  description: Geography game that drops you somewhere in the world.
+  primary_category: Play
+  lenses: [game]
+  quality: solid
+
+- name: The Wiki Game
+  url: https://www.thewikigame.com
+  description: Puzzle game about navigating Wikipedia links.
+  primary_category: Play
+  lenses: [knowledge, game]
+  quality: niche
+
+- name: A Dark Room
+  url: https://adarkroom.doublespeakgames.com
+  description: Minimalist browser-based text game.
+  primary_category: Play
+  lenses: [indie]
+  quality: exceptional

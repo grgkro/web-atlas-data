@@ -1,0 +1,20 @@
+- name: Notion
+  url: https://www.notion.so
+  description: All-in-one workspace for notes, documents, and collaboration.
+  primary_category: Tools
+  lenses: [productivity]
+  quality: solid
+
+- name: Photopea
+  url: https://www.photopea.com
+  description: Advanced image editor that runs entirely in the browser.
+  primary_category: Tools
+  lenses: [design, no-install]
+  quality: exceptional
+
+- name: Excalidraw
+  url: https://excalidraw.com
+  description: Simple, collaborative whiteboard with a hand-drawn feel.
+  primary_category: Tools
+  lenses: [open, collaboration]
+  quality: solid
