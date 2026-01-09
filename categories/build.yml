@@ -18,3 +18,10 @@
   primary_category: Build
   lenses: [open-source]
   quality: solid
+
+- name: MDN Web Docs
+  url: https://developer.mozilla.org
+  description: Comprehensive documentation and learning resources for web developers.
+  primary_category: Build
+  lenses: [education, reference]
+  quality: solid
