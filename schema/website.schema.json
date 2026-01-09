@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "required": ["name", "url", "description", "primary_category"],
+  "properties": {
+    "name": { "type": "string" },
+    "url": { "type": "string", "format": "uri" },
+    "description": { "type": "string", "maxLength": 160 },
+    "primary_category": { "type": "string" },
+    "lenses": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "quality": {
+      "type": "string",
+      "enum": ["exceptional", "solid", "niche"]
+    }
+  }
+}

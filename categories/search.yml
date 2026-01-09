@@ -1,0 +1,6 @@
+- name: DuckDuckGo
+  url: https://duckduckgo.com
+  description: Privacy-focused search engine
+  primary_category: Search
+  lenses: [privacy]
+  quality: solid
