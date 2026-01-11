@@ -114,11 +114,11 @@ def load_policy() -> Dict[str, Any]:
     return load_yaml("ai/policy.yml")
 
 def load_allowed_categories() -> List[str]:
-    doc = load_yaml("ai/policy.yml")
+    doc = load_yaml("ai/categories.yml")
     return doc.get("categories", [])
 
 def load_allowed_lenses() -> List[str]:
-    doc = load_yaml("ai/policy.yml")
+    doc = load_yaml("ai/lenses.yml")
     return doc.get("lenses", [])
 
 def openai_chat(prompt: str) -> Dict[str, Any]:
