@@ -81,26 +81,45 @@ jobs:
           git add .github/generated_sites.txt
 
           # Add each generated file listed (strip CRLF!)
+          files_added=0
           while IFS= read -r raw; do
             file="$(printf '%s' "$raw" | tr -d '\r' | xargs)"
             if [ -z "$file" ]; then
               continue
             fi
             if [ -f "$file" ]; then
-              echo "Adding file: $file"
-              git add "$file"
+              echo "Checking file: $file"
+              # Check if file has changes before adding
+              if git diff --quiet "$file" 2>/dev/null; then
+                echo "  File has no changes, checking if it exists in git..."
+                if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
+                  echo "  File is tracked but unchanged, force adding anyway"
+                else
+                  echo "  File is untracked, will add"
+                fi
+              else
+                echo "  File has changes, adding"
+              fi
+              git add -f "$file"
+              files_added=$((files_added + 1))
             else
               echo "⚠️ Listed file not found: '$file'"
             fi
           done < .github/generated_sites.txt
-
+          
+          echo ""
+          echo "Files processed: $files_added"
           echo "Git status after staging:"
           git status
+          echo ""
+          echo "Staged changes:"
+          git diff --cached --stat || echo "No staged changes"
 
-          # If nothing staged, don't fail the job (avoid noisy red builds)
-          if git diff --cached --quiet; then
-            echo "No staged changes; nothing to commit."
-            exit 0
+          # Check if we have staged changes (excluding generated_sites.txt)
+          if git diff --cached --quiet -- . ':!.github/generated_sites.txt'; then
+            echo "❌ No staged changes for site files (only generated_sites.txt was staged)"
+            echo "This means the site files were not actually modified by the script."
+            exit 1
           fi
 
           git commit -m "chore: AI generate site.yml from URL submissions"
