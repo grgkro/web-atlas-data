@@ -174,11 +174,13 @@ Instructions:
 Return your response as a JSON object with these fields:
 - id (string): slug identifier (lowercase, hyphens only)
 - url (string): the provided URL
-- category (string): one of {', '.join(allowed_categories)}
-- lenses (array of strings, 0-4 items): from allowed lenses
+- category (string): MUST be exactly one of these values: {', '.join(allowed_categories)}. Do not invent new categories.
+- lenses (array of strings, 0-4 items): from allowed lenses: {', '.join(allowed_lenses)}
 - quality (string): "exceptional", "solid", or "niche"
 - title (object): {{"en": "English title"}}
 - description (object): {{"en": "English description"}}
+
+IMPORTANT: The category field MUST be exactly one of: {', '.join(allowed_categories)}. Use "Knowledge" for educational content, books, documentation, references, etc.
 
 Return ONLY valid JSON, no markdown formatting, no code blocks."""
     
@@ -258,7 +260,14 @@ def main() -> int:
                 # Validate generated data
                 errs = sorted(site_validator.iter_errors(site_data), key=lambda er: er.path)
                 if errs:
-                    errors.append(f"- ❌ `{url}`: Generated data has schema errors: " + "; ".join([er.message for er in errs]))
+                    error_msgs = "; ".join([f"{'.'.join(str(p) for p in er.path) if er.path else 'root'}: {er.message}" for er in errs])
+                    errors.append(f"- ❌ `{url}`: Generated data has schema errors: {error_msgs}")
+                    remaining_urls.append(url)  # Keep in submissions file
+                    continue
+                
+                # Double-check category is in allowed list (schema validation should catch this, but be explicit)
+                if site_data.get("category") not in allowed_categories:
+                    errors.append(f"- ❌ `{url}`: Category '{site_data.get('category')}' is not in allowed list: {', '.join(allowed_categories)}")
                     remaining_urls.append(url)  # Keep in submissions file
                     continue
                 
