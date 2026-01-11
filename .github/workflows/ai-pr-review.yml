@@ -13,7 +13,7 @@ on:
       - ".github/scripts/**"
 
 permissions:
-  contents: write          # needed only if you enable auto-fix commits
+  contents: write          # needed for generating and committing site files
   pull-requests: write     # comment on PR
   issues: write            # sometimes needed for comments depending on org settings
 
@@ -22,14 +22,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  review:
+  generate-site:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +50,86 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python .github/scripts/validate_pr_format.py
-        continue-on-error: false
+
+      - name: Generate site files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ENABLE_URL_FETCH: "true"
+        run: |
+          python .github/scripts/generate_site_from_url.py
+
+      - name: Commit and push generated files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+
+          if [ ! -f ".github/generated_sites.txt" ]; then
+            echo "No generated files, skipping commit"
+            exit 0
+          fi
+
+          git config --local user.email "web-atlas-bot@users.noreply.github.com"
+          git config --local user.name "web-atlas-bot"
+
+          echo "Generated files list:"
+          cat .github/generated_sites.txt || true
+
+          # Always add the generated list (it's currently untracked)
+          git add .github/generated_sites.txt
+
+          # Add each generated file listed (strip CRLF!)
+          while IFS= read -r raw; do
+            file="$(printf '%s' "$raw" | tr -d '\r' | xargs)"
+            if [ -z "$file" ]; then
+              continue
+            fi
+            if [ -f "$file" ]; then
+              echo "Adding file: $file"
+              git add "$file"
+            else
+              echo "⚠️ Listed file not found: '$file'"
+            fi
+          done < .github/generated_sites.txt
+
+          echo "Git status after staging:"
+          git status
+
+          # If nothing staged, don't fail the job (avoid noisy red builds)
+          if git diff --cached --quiet; then
+            echo "No staged changes; nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: AI generate site.yml from URL submissions"
+
+          # Push explicitly to the PR branch (avoids ambiguity)
+          git push origin "HEAD:${PR_BRANCH}"
+          echo "✅ Successfully committed and pushed generated site files"
+
+  review:
+    runs-on: ubuntu-latest
+    needs: generate-site  # Wait for site generation to complete
+    
+    steps:
+      - name: Checkout PR HEAD branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema requests
 
       - name: Run AI reviewer
         env:
