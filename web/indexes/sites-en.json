@@ -1,5 +1,21 @@
 [
   {
+    "id": "buildyourownx",
+    "url": "https://github.com/codecrafters-io/build-your-own-x",
+    "title": "Build Your Own X",
+    "description": "Step-by-step guides to building core technologies from scratch.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "fundamentals"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
     "id": "explorable-explanations",
     "url": "https://explorabl.es",
     "title": "Explorable Explanations",
@@ -78,10 +94,42 @@
     }
   },
   {
+    "id": "project-based-learning",
+    "url": "https://github.com/practical-tutorials/project-based-learning",
+    "title": "Project Based Learning",
+    "description": "Curated list of project ideas to learn programming by building.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "hands-on"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
     "id": "teachyourselfcs",
     "url": "https://teachyourselfcs.com",
     "title": "Teach Yourself Computer Science",
     "description": "Curated guide to learning core computer science topics deeply.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "fundamentals"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "missing-semester",
+    "url": "https://missing.csail.mit.edu",
+    "title": "The Missing Semester",
+    "description": "Practical computer science skills rarely taught in formal courses.",
     "category": "Build",
     "lenses": [
       "education",
@@ -125,6 +173,38 @@
       "indie"
     ],
     "quality": "solid"
+  },
+  {
+    "id": "gumroad",
+    "url": "https://gumroad.com",
+    "title": "Gumroad",
+    "description": "Platform for creators to sell digital products directly.",
+    "category": "Buy",
+    "lenses": [
+      "indie",
+      "creator-economy"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "itch",
+    "url": "https://itch.io",
+    "title": "itch.io",
+    "description": "Marketplace for independent games and experimental projects.",
+    "category": "Buy",
+    "lenses": [
+      "indie",
+      "creative"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
   },
   {
     "id": "atlas-obscura",
@@ -210,6 +290,67 @@
     "quality": "exceptional"
   },
   {
+    "id": "aeon",
+    "url": "https://aeon.co",
+    "title": "Aeon",
+    "description": "Long-form essays on philosophy, science, and culture.",
+    "category": "Knowledge",
+    "lenses": [
+      "philosophy",
+      "essays"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "edge",
+    "url": "https://www.edge.org",
+    "title": "Edge",
+    "description": "Conversations and essays by leading scientists and thinkers.",
+    "category": "Knowledge",
+    "lenses": [
+      "science",
+      "essays"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "gwern",
+    "url": "https://www.gwern.net",
+    "title": "Gwern.net",
+    "description": "Deep, data-driven essays on science, psychology, and technology.",
+    "category": "Knowledge",
+    "lenses": [
+      "research",
+      "longform"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "ncase-me",
+    "url": "https://ncase.me",
+    "title": "It's Nicky Case!",
+    "description": "Nicky Case's website features interactive storytelling and educational games that explore complex topics in an engaging way.",
+    "category": "Knowledge",
+    "lenses": [
+      "education",
+      "curiosity",
+      "indie"
+    ],
+    "quality": "exceptional"
+  },
+  {
     "id": "khan-academy",
     "url": "https://www.khanacademy.org",
     "title": "Khan Academy",
@@ -282,6 +423,20 @@
     }
   },
   {
+    "id": "standard-ebooks-org",
+    "url": "https://standardebooks.org",
+    "title": "Standard Ebooks",
+    "description": "A collection of free and liberated ebooks, carefully produced for the true book lover.",
+    "category": "Knowledge",
+    "lenses": [
+      "free",
+      "open",
+      "indie",
+      "education"
+    ],
+    "quality": "solid"
+  },
+  {
     "id": "wikipedia",
     "url": "https://www.wikipedia.org",
     "title": "Wikipedia",
@@ -316,6 +471,22 @@
     "quality": "exceptional"
   },
   {
+    "id": "restofworld",
+    "url": "https://restofworld.org",
+    "title": "Rest of World",
+    "description": "Reporting on how technology affects people outside the Western world.",
+    "category": "News",
+    "lenses": [
+      "global",
+      "technology"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
     "id": "slow-boring",
     "url": "https://www.slowboring.com",
     "title": "Slow Boring",
@@ -328,6 +499,22 @@
     "quality": "solid",
     "tags": {
       "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "stratchery",
+    "url": "https://stratechery.com",
+    "title": "Stratechery",
+    "description": "Deep analysis of technology and business strategy.",
+    "category": "News",
+    "lenses": [
+      "analysis",
+      "technology"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
       "maturity": "stable"
     }
   },
@@ -414,6 +601,54 @@
     }
   },
   {
+    "id": "falling-sand",
+    "url": "https://sandspiel.club",
+    "title": "Sandspiel",
+    "description": "Falling-sand physics simulation playable in the browser.",
+    "category": "Play",
+    "lenses": [
+      "simulation",
+      "creative"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "townscaper",
+    "url": "https://oskarstalberg.com/Townscaper",
+    "title": "Townscaper",
+    "description": "Relaxing tool for building colorful towns with simple interactions.",
+    "category": "Play",
+    "lenses": [
+      "creative",
+      "relaxing"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "universal-paperclips",
+    "url": "https://www.decisionproblem.com/paperclips",
+    "title": "Universal Paperclips",
+    "description": "Incremental game exploring AI, optimization, and unintended consequences.",
+    "category": "Play",
+    "lenses": [
+      "philosophy",
+      "incremental"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "legacy"
+    }
+  },
+  {
     "id": "the-wiki-game",
     "url": "https://www.thewikigame.com",
     "title": "The Wiki Game",
@@ -465,6 +700,22 @@
     }
   },
   {
+    "id": "searchmysite",
+    "url": "https://searchmysite.net",
+    "title": "Search My Site",
+    "description": "Search engine indexing only personal and independent websites.",
+    "category": "Search",
+    "lenses": [
+      "indie",
+      "no-ads"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
     "id": "wiby",
     "url": "https://wiby.me",
     "title": "Wiby",
@@ -490,6 +741,54 @@
       "education"
     ],
     "quality": "solid"
+  },
+  {
+    "id": "miljoenen",
+    "url": "https://million.shortstory.io",
+    "title": "Million Short Story",
+    "description": "Navigate a million interconnected short stories through links.",
+    "category": "Search",
+    "lenses": [
+      "creative",
+      "exploration"
+    ],
+    "quality": "niche",
+    "tags": {
+      "popularity": "low",
+      "maturity": "experimental"
+    }
+  },
+  {
+    "id": "libreoffice-online",
+    "url": "https://www.collaboraoffice.com/collabora-online",
+    "title": "Collabora Online",
+    "description": "Open-source online office suite based on LibreOffice.",
+    "category": "Tools",
+    "lenses": [
+      "open-source",
+      "collaboration"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "cryptpad",
+    "url": "https://cryptpad.fr",
+    "title": "CryptPad",
+    "description": "Privacy-first collaborative documents with end-to-end encryption.",
+    "category": "Tools",
+    "lenses": [
+      "privacy",
+      "collaboration"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
   },
   {
     "id": "drawio",
@@ -547,6 +846,22 @@
     }
   },
   {
+    "id": "overleaf",
+    "url": "https://www.overleaf.com",
+    "title": "Overleaf",
+    "description": "Online LaTeX editor for scientific and technical documents.",
+    "category": "Tools",
+    "lenses": [
+      "writing",
+      "academia"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
     "id": "photopea",
     "url": "https://www.photopea.com",
     "title": "Photopea",
@@ -572,6 +887,22 @@
     "tags": {
       "popularity": "low",
       "maturity": "legacy"
+    }
+  },
+  {
+    "id": "standard-notes",
+    "url": "https://standardnotes.com",
+    "title": "Standard Notes",
+    "description": "End-to-end encrypted note-taking focused on longevity and privacy.",
+    "category": "Tools",
+    "lenses": [
+      "privacy",
+      "local-first"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
     }
   }
 ]

@@ -2,11 +2,11 @@
   "categories": [
     {
       "name": "Build",
-      "count": 7
+      "count": 10
     },
     {
       "name": "Buy",
-      "count": 3
+      "count": 5
     },
     {
       "name": "Explore",
@@ -14,24 +14,24 @@
     },
     {
       "name": "Knowledge",
-      "count": 6
+      "count": 11
     },
     {
       "name": "News",
-      "count": 5
+      "count": 7
     },
     {
       "name": "Play",
-      "count": 5
+      "count": 8
     },
     {
       "name": "Search",
-      "count": 5
+      "count": 7
     },
     {
       "name": "Tools",
-      "count": 6
+      "count": 10
     }
   ],
-  "totalSites": 43
+  "totalSites": 64
 }
