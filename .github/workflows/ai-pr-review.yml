@@ -26,13 +26,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR HEAD branch (not merge commit)
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_PAT }}
           persist-credentials: true
 
       - name: Set up Python
