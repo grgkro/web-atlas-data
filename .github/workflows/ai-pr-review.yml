@@ -11,6 +11,7 @@ on:
       - "schema/**"
       - "ai/**"
       - ".github/scripts/**"
+      - ".github/submissions.txt"
 
 permissions:
   contents: write          # needed for generating and committing site files
