@@ -4,14 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - "categories/**/*.yml"
-      - "categories/**/*.yaml"
-      - "sites/**/*.yml"
-      - "sites/**/*.yaml"
-      - "schema/**"
-      - "ai/**"
-      - ".github/scripts/**"
       - ".github/submissions.txt"
+      - "sites/**/site.yml"
 
 permissions:
   contents: write          # needed for generating and committing site files
@@ -27,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout PR HEAD branch (not merge commit)
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -52,92 +46,67 @@ jobs:
         run: |
           python .github/scripts/validate_pr_format.py
 
+      - name: Determine PR mode
+        id: pr_mode
+        run: |
+          # Check if this is a submission PR
+          IS_SUBMISSION=false
+          if [ -f ".github/submissions.txt" ]; then
+            URL_COUNT=$(grep -v '^[[:space:]]*#' .github/submissions.txt | grep -c '[^[:space:]]' || echo "0")
+            if [ "$URL_COUNT" -eq 1 ]; then
+              IS_SUBMISSION=true
+            fi
+          fi
+          
+          # Check if this is a bot result PR
+          IS_BOT_RESULT=false
+          if [ "$IS_SUBMISSION" = "false" ]; then
+            # submissions.txt must be missing or empty
+            if [ ! -f ".github/submissions.txt" ] || [ -z "$(grep -v '^[[:space:]]*#' .github/submissions.txt | grep '[^[:space:]]')" ]; then
+              # Check if PR only changes sites/**/site.yml (and maybe deletes submissions)
+              BASE=$(git merge-base origin/main HEAD)
+              CHANGED_FILES=$(git diff --name-only "${BASE}...HEAD")
+              SITE_FILES=$(echo "$CHANGED_FILES" | grep -E '^sites/[^/]+/site\.yml$' || true)
+              OTHER_FILES=$(echo "$CHANGED_FILES" | grep -vE '^(sites/[^/]+/site\.yml|\.github/submissions\.txt)$' || true)
+              
+              if [ -n "$SITE_FILES" ] && [ -z "$OTHER_FILES" ]; then
+                IS_BOT_RESULT=true
+              fi
+            fi
+          fi
+          
+          echo "is_submission=$IS_SUBMISSION" >> $GITHUB_OUTPUT
+          echo "is_bot_result=$IS_BOT_RESULT" >> $GITHUB_OUTPUT
+          
+          if [ "$IS_SUBMISSION" = "false" ] && [ "$IS_BOT_RESULT" = "false" ]; then
+            echo "❌ Invalid PR: Neither submission PR nor bot result PR"
+            echo "Submission PR requires: .github/submissions.txt with exactly 1 URL"
+            echo "Bot result PR requires: submissions.txt missing/empty AND only sites/**/site.yml changes"
+            exit 1
+          fi
+
       - name: Generate site files
+        if: steps.pr_mode.outputs.is_submission == 'true'
+        id: generate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ENABLE_URL_FETCH: "true"
         run: |
-          python .github/scripts/generate_site_from_url.py
+          python .github/scripts/generate_site_from_url.py | tee generation_output.txt
+          # Extract generated file paths (one per line)
+          grep "^GENERATED_FILE:" generation_output.txt | sed 's/^GENERATED_FILE://' > generated_files.txt || touch generated_files.txt
 
       - name: Commit and push generated files
+        if: steps.pr_mode.outputs.is_submission == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           set -euo pipefail
 
-          # Check if submissions.txt exists and has URLs - if not, verify this is a safe second run
-          SKIP_SUBMISSIONS_CHECK=false
-          if [ ! -f ".github/submissions.txt" ]; then
-            echo "No submissions.txt file found. Checking if this is a safe second run..."
-            
-            # If generated_sites.txt exists, check if files are already committed (second run) or need to be committed (first run)
-            if [ -f ".github/generated_sites.txt" ]; then
-              # Check if the files listed in generated_sites.txt are already committed
-              BASE=$(git merge-base origin/main HEAD)
-              ALL_COMMITTED=true
-              while IFS= read -r file || [ -n "$file" ]; do
-                file=$(printf '%s' "$file" | tr -d '\r\n' | xargs)
-                if [ -z "$file" ] || [ "$file" = ".github/submissions.txt" ]; then
-                  continue
-                fi
-                # Check if file is already in the base..HEAD range
-                if ! git diff --name-only --diff-filter=A "${BASE}...HEAD" | grep -q "^${file}$"; then
-                  ALL_COMMITTED=false
-                  break
-                fi
-              done < .github/generated_sites.txt
-              
-              if [ "$ALL_COMMITTED" = "true" ]; then
-                echo "✅ No submissions.txt, generated_sites.txt exists, but files are already committed (safe second run)"
-                exit 0
-              else
-                echo "✅ No submissions.txt, but generated_sites.txt exists (script just ran), proceeding with commit"
-                SKIP_SUBMISSIONS_CHECK=true
-              fi
-            else
-              # No submissions.txt and no generated_sites.txt - check if this is a safe second run
-              # Get the base commit to compare against
-              BASE=$(git merge-base origin/main HEAD)
-              
-              # Check if there are any new site files in this PR (committed)
-              NEW_SITE_FILES=$(git diff --name-only --diff-filter=A "${BASE}...HEAD" | grep -E '^sites/[^/]+/site\.yml$' || true)
-              
-              if [ -n "$NEW_SITE_FILES" ]; then
-                # There are new site files - verify the latest commit was from the bot
-                LATEST_COMMIT_AUTHOR=$(git log -1 --format='%an')
-                LATEST_COMMIT_EMAIL=$(git log -1 --format='%ae')
-                
-                if [ "$LATEST_COMMIT_AUTHOR" = "web-atlas-bot" ] && [ "$LATEST_COMMIT_EMAIL" = "web-atlas-bot@users.noreply.github.com" ]; then
-                  echo "✅ No submissions.txt, but latest commit is from bot (safe second run), skipping commit"
-                  exit 0
-                else
-                  echo "❌ Security issue: No submissions.txt found, but new site files exist and latest commit is NOT from bot"
-                  echo "Latest commit author: $LATEST_COMMIT_AUTHOR <$LATEST_COMMIT_EMAIL>"
-                  echo "New site files detected:"
-                  echo "$NEW_SITE_FILES"
-                  echo "All site files must be submitted via .github/submissions.txt for security validation."
-                  exit 1
-                fi
-              else
-                # No new site files, safe to skip
-                echo "No submissions.txt and no new site files, skipping commit"
-                exit 0
-              fi
-            fi
-          fi
-          
-          # Check if submissions.txt has any URLs (only if we didn't skip the check above)
-          if [ "$SKIP_SUBMISSIONS_CHECK" = "false" ]; then
-            if ! grep -v '^[[:space:]]*#' .github/submissions.txt | grep -q '[^[:space:]]'; then
-              echo "No URLs in submissions.txt (already processed in previous run), skipping commit"
-              exit 0
-            fi
-          fi
-          
           if [ ! -f ".github/generated_sites.txt" ]; then
-            echo "No generated files, skipping commit"
+            echo "No generated files list found, nothing to commit"
             exit 0
           fi
 
@@ -147,101 +116,37 @@ jobs:
           echo "Generated files list:"
           cat .github/generated_sites.txt || true
 
-          # Always add the generated list (it's currently untracked)
-          git add .github/generated_sites.txt
-          
-          # Also add/remove submissions.txt if it was modified (script may have removed URLs or deleted the file)
+          # Add generated site files
+          files_added=0
+          while IFS= read -r file || [ -n "$file" ]; do
+            file=$(printf '%s' "$file" | tr -d '\r\n' | xargs)
+            if [ -z "$file" ] || [ "$file" = ".github/submissions.txt" ]; then
+              continue
+            fi
+            if [ -f "$file" ]; then
+              git add -f "$file"
+              files_added=$((files_added + 1))
+              echo "✅ Added: $file"
+            fi
+          done < .github/generated_sites.txt
+
+          # Handle submissions.txt (may be deleted or updated)
           if [ -f ".github/submissions.txt" ]; then
             git add .github/submissions.txt
           elif git ls-files --error-unmatch .github/submissions.txt >/dev/null 2>&1; then
-            # File was deleted, stage the deletion
-            git add .github/submissions.txt
+            git add .github/submissions.txt  # Stage deletion
           fi
 
-          # Add each generated file listed (strip CRLF!)
-          files_added=0
-          echo "Reading files from .github/generated_sites.txt:"
-          while IFS= read -r raw || [ -n "$raw" ]; do
-            # Strip carriage returns and trim whitespace
-            file="$(printf '%s' "$raw" | tr -d '\r\n' | xargs)"
-            if [ -z "$file" ]; then
-              echo "Skipping empty line"
-              continue
-            fi
-            echo "Processing file path: '$file'"
-            if [ -f "$file" ]; then
-              echo "  ✓ File exists"
-              # Check git status of file
-              if git diff --quiet "$file" 2>/dev/null; then
-                echo "  ⚠ File exists but git diff shows no changes"
-                echo "  Checking if file is tracked:"
-                if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-                  echo "  ✓ File is tracked"
-                  echo "  Force adding file anyway..."
-                else
-                  echo "  ⚠ File is not tracked"
-                  echo "  Adding as new file..."
-                fi
-              else
-                echo "  ✓ File has changes according to git diff"
-              fi
-              # Add the file
-              if git add -f "$file"; then
-                echo "  ✓ git add command succeeded"
-                # Verify it was staged by checking if it appears in staged changes
-                if git diff --cached --name-only | grep -q "^$file$"; then
-                  echo "  ✓ File successfully staged (appears in staged changes)"
-                  files_added=$((files_added + 1))
-                else
-                  echo "  ⚠ git add succeeded but file not in staged changes list"
-                  echo "  Checking git status for this file:"
-                  git status -- "$file" || true
-                fi
-              else
-                echo "  ❌ git add failed for: $file"
-              fi
-            else
-              echo "  ❌ File not found: '$file'"
-              echo "  Current directory: $(pwd)"
-              echo "  Listing sites directory:"
-              ls -la sites/ 2>&1 | head -20 || true
-            fi
-          done < .github/generated_sites.txt
-          
-          echo ""
-          echo "Files processed: $files_added"
-          echo "Git status after staging:"
-          git status
-          echo ""
-          echo "Staged changes:"
-          git diff --cached --stat || echo "No staged changes"
+          # Add generated_sites.txt (tracking file)
+          git add .github/generated_sites.txt
 
-          # Check if we have staged changes (excluding generated_sites.txt and submissions.txt)
-          if git diff --cached --quiet -- . ':!.github/generated_sites.txt' ':!.github/submissions.txt'; then
-            # No staged changes - check if files are already committed (this is a second run)
-            if [ "$files_added" -eq 0 ]; then
-              echo "✅ No staged changes and no files to add - files are already committed (safe second run)"
-              # Clean up generated_sites.txt since it's no longer needed
-              if [ -f ".github/generated_sites.txt" ]; then
-                git rm -f .github/generated_sites.txt 2>/dev/null || rm -f .github/generated_sites.txt
-                if git diff --cached --quiet; then
-                  echo "No changes to commit"
-                else
-                  git commit -m "chore: cleanup generated_sites.txt" || true
-                  git push origin "HEAD:${PR_BRANCH}" || true
-                fi
-              fi
-              exit 0
-            else
-              echo "❌ No staged changes for site files (only generated_sites.txt or submissions.txt was staged)"
-              echo "This means the site files were not actually modified by the script."
-              exit 1
-            fi
+          # Check if we have actual changes to commit
+          if git diff --cached --quiet -- . ':!.github/generated_sites.txt'; then
+            echo "❌ No staged changes for site files"
+            exit 1
           fi
 
           git commit -m "chore: AI generate site.yml from URL submissions"
-
-          # Push explicitly to the PR branch (avoids ambiguity)
           git push origin "HEAD:${PR_BRANCH}"
           echo "✅ Successfully committed and pushed generated site files"
 
@@ -271,22 +176,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # mode can be: comment-only | autofix
           REVIEW_MODE: comment-only
-          # set true later when you're confident
           ENABLE_AUTOMERGE: "false"
-          # Optional: disable network checks if you want deterministic CI
           ENABLE_URL_FETCH: "true"
         run: |
           python .github/scripts/ai_pr_review.py
 
-      # Optional step: enable auto-merge once you trust the system
       - name: Auto-merge (optional)
         if: env.ENABLE_AUTOMERGE == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Merge only if the bot marked it as OK by creating this file.
           if [ -f ".github/ai_review/APPROVED" ]; then
             echo "Approved by AI, enabling merge."
           else
