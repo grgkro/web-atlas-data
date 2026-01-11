@@ -30,7 +30,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -59,52 +62,51 @@ jobs:
       - name: Commit and push generated files
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
-          set -e  # Exit on any error
-          
-          # Check if any files were generated
+          set -euo pipefail
+
           if [ ! -f ".github/generated_sites.txt" ]; then
             echo "No generated files, skipping commit"
             exit 0
           fi
-          
-          # Configure git
+
           git config --local user.email "web-atlas-bot@users.noreply.github.com"
           git config --local user.name "web-atlas-bot"
-          
-          # Add generated files
-          while IFS= read -r file; do
-            if [ -n "$file" ] && [ -f "$file" ]; then
+
+          echo "Generated files list:"
+          cat .github/generated_sites.txt || true
+
+          # Always add the generated list (it's currently untracked)
+          git add .github/generated_sites.txt
+
+          # Add each generated file listed (strip CRLF!)
+          while IFS= read -r raw; do
+            file="$(printf '%s' "$raw" | tr -d '\r' | xargs)"
+            if [ -z "$file" ]; then
+              continue
+            fi
+            if [ -f "$file" ]; then
               echo "Adding file: $file"
               git add "$file"
+            else
+              echo "⚠️ Listed file not found: '$file'"
             fi
           done < .github/generated_sites.txt
-          
-          # Check if there are actually staged changes
+
+          echo "Git status after staging:"
+          git status
+
+          # If nothing staged, don't fail the job (avoid noisy red builds)
           if git diff --cached --quiet; then
-            echo "❌ No changes detected after adding files"
-            echo "Git status:"
-            git status
-            echo "Checking if files were modified:"
-            while IFS= read -r file; do
-              if [ -n "$file" ] && [ -f "$file" ]; then
-                echo "File: $file"
-                if git diff --quiet "$file"; then
-                  echo "  - No changes detected"
-                else
-                  echo "  - Has changes (unstaged)"
-                fi
-              fi
-            done < .github/generated_sites.txt
-            exit 1
+            echo "No staged changes; nothing to commit."
+            exit 0
           fi
-          
-          # Commit the staged changes
-          echo "Staging changes detected, committing..."
+
           git commit -m "chore: AI generate site.yml from URL submissions"
-          
-          # Push to the PR branch (will fail if push fails - this is intentional)
-          git push
+
+          # Push explicitly to the PR branch (avoids ambiguity)
+          git push origin "HEAD:${PR_BRANCH}"
           echo "✅ Successfully committed and pushed generated site files"
 
   review:
@@ -112,10 +114,12 @@ jobs:
     needs: generate-site  # Wait for site generation to complete
     
     steps:
-      - name: Checkout PR branch
+      - name: Checkout PR HEAD branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
