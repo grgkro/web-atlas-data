@@ -68,13 +68,14 @@ jobs:
           set -euo pipefail
 
           # Check if submissions.txt exists and has URLs - if not, verify this is a safe second run
+          SKIP_SUBMISSIONS_CHECK=false
           if [ ! -f ".github/submissions.txt" ]; then
             echo "No submissions.txt file found. Checking if this is a safe second run..."
             
             # If generated_sites.txt exists, the script just ran and generated files (same workflow run)
             if [ -f ".github/generated_sites.txt" ]; then
               echo "✅ No submissions.txt, but generated_sites.txt exists (script just ran), proceeding with commit"
-              # Continue with the commit process below
+              SKIP_SUBMISSIONS_CHECK=true
             else
               # No submissions.txt and no generated_sites.txt - check if this is a safe second run
               # Get the base commit to compare against
@@ -107,10 +108,12 @@ jobs:
             fi
           fi
           
-          # Check if submissions.txt has any URLs (non-empty, non-comment lines)
-          if ! grep -v '^[[:space:]]*#' .github/submissions.txt | grep -q '[^[:space:]]'; then
-            echo "No URLs in submissions.txt (already processed in previous run), skipping commit"
-            exit 0
+          # Check if submissions.txt has any URLs (only if we didn't skip the check above)
+          if [ "$SKIP_SUBMISSIONS_CHECK" = "false" ]; then
+            if ! grep -v '^[[:space:]]*#' .github/submissions.txt | grep -q '[^[:space:]]'; then
+              echo "No URLs in submissions.txt (already processed in previous run), skipping commit"
+              exit 0
+            fi
           fi
           
           if [ ! -f ".github/generated_sites.txt" ]; then
