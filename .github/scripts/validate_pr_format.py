@@ -142,6 +142,9 @@ def main() -> int:
         )
 
         # Build allowed files list based on PR type
+        # Validate file changes based on PR type
+        errors: List[str] = []
+        warnings: List[str] = []
         if is_contributor_pr:
             allowed_files = {submissions_file}
             pr_type = "contributor submission"
@@ -198,7 +201,7 @@ This PR does not follow the secure submission format.
 
 **For contributor PRs:** Only `.github/submissions.txt` with exactly one URL is allowed.
 
-**For bot-result PRs:** Only `sites/<id>/site.yml` files and `.github/submissions.txt` deletion are allowed. Bot-result PRs must be created by the `web-atlas-bot` account.
+**For bot-result PRs:** Only `sites/<id>/site.yml` files and `.github/submissions.txt` deletion are allowed. Bot-result state is detected by allowed file changes (generated sites/<id>/site.yml).
 
 **Disallowed changes:** Workflow files, scripts, schemas, or AI files cannot be modified in submission PRs.
 """
