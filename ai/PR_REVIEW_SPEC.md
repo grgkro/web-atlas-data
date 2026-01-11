@@ -15,26 +15,34 @@ that add or modify website entries.
 
 To prevent prompt injection attacks, new site submissions must follow a secure format:
 
-1. **User submits PR with URL-only file**: Create `sites/<site-id>/site.yml` containing exactly one line with the website URL (max 200 characters)
-   - Example: `https://example.com`
-   - The file must contain only the URL, nothing else
+1. **User submits PR with `.github/submissions.txt`**: Create or edit `.github/submissions.txt` containing one URL per line (max 200 characters per line)
+   - Example:
+     ```
+     https://example.com
+     https://another-site.org
+     ```
+   - Each line must be a valid HTTP/HTTPS URL
 
 2. **Automated format validation** (script-based, not AI):
-   - Validates that the file contains exactly one line
-   - Validates that the line is a valid HTTP/HTTPS URL
-   - Validates that the line does not exceed 200 characters
+   - Validates that each line is a valid HTTP/HTTPS URL
+   - Validates that each line does not exceed 200 characters
    - This validation happens BEFORE any AI processing to prevent prompt injection
 
 3. **AI generation**: If validation passes, the AI:
-   - Fetches and analyzes the website
-   - Generates a complete `site.yml` file with all required fields (id, category, lenses, quality, title, description, etc.)
+   - Reads URLs from `.github/submissions.txt`
+   - Fetches and analyzes each website
+   - Generates complete `sites/<id>/site.yml` files with all required fields (id, category, lenses, quality, title, description, etc.)
    - Validates the generated data against the schema
 
-4. **Auto-commit and approval**: If generation succeeds:
-   - The complete `site.yml` is committed automatically to the PR branch
+4. **Auto-commit and cleanup**: If generation succeeds:
+   - The generated `sites/<id>/site.yml` files are committed automatically to the PR branch
+   - Processed URLs are removed from `.github/submissions.txt` (or the file is deleted if all URLs were processed)
    - The PR is marked as approved and ready for merge
 
-This process ensures that users cannot inject malicious prompts into the AI system, as the AI only processes clean URLs and generates all metadata itself.
+This process ensures that:
+- Users cannot inject malicious prompts into the AI system (AI only processes clean URLs)
+- The `sites/` directory never contains invalid states (only complete, validated site files)
+- Subsequent workflow runs skip processing if no URLs remain in `.github/submissions.txt`
 
 ### Editing Existing Sites
 

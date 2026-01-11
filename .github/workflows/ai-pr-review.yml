@@ -79,6 +79,14 @@ jobs:
 
           # Always add the generated list (it's currently untracked)
           git add .github/generated_sites.txt
+          
+          # Also add/remove submissions.txt if it was modified (script may have removed URLs or deleted the file)
+          if [ -f ".github/submissions.txt" ]; then
+            git add .github/submissions.txt
+          elif git ls-files --error-unmatch .github/submissions.txt >/dev/null 2>&1; then
+            # File was deleted, stage the deletion
+            git add .github/submissions.txt
+          fi
 
           # Add each generated file listed (strip CRLF!)
           files_added=0
@@ -138,9 +146,9 @@ jobs:
           echo "Staged changes:"
           git diff --cached --stat || echo "No staged changes"
 
-          # Check if we have staged changes (excluding generated_sites.txt)
-          if git diff --cached --quiet -- . ':!.github/generated_sites.txt'; then
-            echo "❌ No staged changes for site files (only generated_sites.txt was staged)"
+          # Check if we have staged changes (excluding generated_sites.txt and submissions.txt)
+          if git diff --cached --quiet -- . ':!.github/generated_sites.txt' ':!.github/submissions.txt'; then
+            echo "❌ No staged changes for site files (only generated_sites.txt or submissions.txt was staged)"
             echo "This means the site files were not actually modified by the script."
             exit 1
           fi

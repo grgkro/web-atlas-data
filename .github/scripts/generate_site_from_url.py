@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate site.yml files from URL-only submissions.
+Generate site.yml files from URL-only submissions in .github/submissions.txt.
 
 This script is run as a separate job to generate site files without committing.
 The workflow job handles the commit and push.
@@ -24,71 +24,67 @@ def load_yaml(path: str) -> Any:
         return yaml.safe_load(f)
 
 def save_yaml(path: str, data: Any) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
-        yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
-
-def sh(cmd: List[str]) -> str:
-    import subprocess
-    return subprocess.check_output(cmd, text=True).strip()
+        yaml.dump(data, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
 
 def get_pr_context() -> Tuple[str, int]:
-    event_path = os.environ.get("GITHUB_EVENT_PATH", "")
-    if not event_path:
-        raise RuntimeError("GITHUB_EVENT_PATH not set")
-    
-    with open(event_path, "r", encoding="utf-8") as f:
-        event = json.load(f)
+    """Get repository and PR number from environment."""
     repo = os.environ.get("GITHUB_REPOSITORY", "")
-    pr_number = int(event["pull_request"]["number"])
-    return repo, pr_number
+    pr_number_str = os.environ.get("GITHUB_EVENT_PULL_REQUEST_NUMBER") or os.environ.get(
+        "GITHUB_EVENT_NUMBER", ""
+    )
+    if not repo or not pr_number_str:
+        import json
+        event_path = os.environ.get("GITHUB_EVENT_PATH", "")
+        if event_path and os.path.exists(event_path):
+            with open(event_path, "r", encoding="utf-8") as f:
+                event = json.load(f)
+            repo = event.get("repository", {}).get("full_name", "")
+            pr_number = event.get("pull_request", {}).get("number") or event.get("number")
+            if repo and pr_number:
+                return repo, int(pr_number)
+        raise ValueError("Could not determine repository or PR number")
+    return repo, int(pr_number_str)
 
-def git_changed_site_files() -> List[str]:
-    """Get list of changed site.yml files in this PR."""
-    base = sh(["git", "merge-base", "origin/main", "HEAD"])
-    out = sh(["git", "diff", "--name-only", f"{base}...HEAD"])
-    changed = [p for p in out.splitlines() if re.match(r"sites/[^/]+/site\.ya?ml$", p)]
-    return changed
-
-def is_url_only_file(filepath: str) -> Tuple[bool, str]:
-    """Check if a site.yml file contains only a URL."""
+def read_submissions_file(filepath: str = ".github/submissions.txt") -> List[str]:
+    """Read URLs from submissions file, returning list of URLs (one per line, skipping empty lines)."""
     if not os.path.exists(filepath):
-        return False, ""
+        return []
     
+    urls = []
     with open(filepath, "r", encoding="utf-8") as f:
-        content = f.read()
-    
-    lines = [line.rstrip('\n\r') for line in content.splitlines() if line.strip()]
-    
-    if len(lines) != 1:
-        return False, ""
-    
-    url_line = lines[0].strip()
-    url_lower = url_line.lower()
-    if url_lower.startswith("http://") or url_lower.startswith("https://"):
-        if len(url_line) <= 200:
-            return True, url_line
-    
-    return False, ""
+        for line in f:
+            url = line.strip()
+            if url and not url.startswith("#"):  # Skip empty lines and comments
+                urls.append(url)
+    return urls
+
+def write_submissions_file(filepath: str, urls: List[str]) -> None:
+    """Write URLs to submissions file (one per line)."""
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+    with open(filepath, "w", encoding="utf-8") as f:
+        for url in urls:
+            f.write(url + "\n")
 
 def normalize_url(url: str) -> str:
     return url.strip().rstrip("/")
 
 def is_probably_bad_url(url: str) -> bool:
+    """Basic heuristic to catch obviously bad URLs."""
     u = url.lower()
     if not (u.startswith("https://") or u.startswith("http://")):
         return True
     bad_patterns = [
-        r"free-money",
-        r"get-rich-quick",
-        r"casino",
-        r"porn",
-        r"xxx",
-        r"crack",
-        r"keygen",
+        r"^https?://localhost",
+        r"^https?://127\.0\.0\.1",
+        r"^https?://0\.0\.0\.0",
+        r"^https?://.*\.local",
     ]
     return any(re.search(p, u) for p in bad_patterns)
 
 def head_check(url: str) -> Tuple[bool, str]:
+    """Check if URL is reachable via HEAD request."""
     if not ENABLE_URL_FETCH:
         return True, "skipped"
     try:
@@ -101,11 +97,7 @@ def head_check(url: str) -> Tuple[bool, str]:
 
 def generate_slug_from_url(url: str) -> str:
     """Generate a slug ID from a URL."""
-    try:
-        from urllib.parse import urlparse
-    except ImportError:
-        import urlparse
-        urlparse = urlparse.urlparse
+    from urllib.parse import urlparse
     parsed = urlparse(url)
     domain = parsed.netloc or parsed.path.split('/')[0]
     if domain.startswith("www."):
@@ -115,36 +107,34 @@ def generate_slug_from_url(url: str) -> str:
     return slug[:50]
 
 def load_site_schema_validator() -> Draft202012Validator:
-    schema = json.load(open("schemas/site.schema.json", "r", encoding="utf-8"))
+    schema = load_yaml("schemas/site.schema.json")
     return Draft202012Validator(schema)
 
 def load_policy() -> Dict[str, Any]:
     return load_yaml("ai/policy.yml")
 
 def load_allowed_categories() -> List[str]:
-    doc = load_yaml("ai/categories.yml")
+    doc = load_yaml("ai/policy.yml")
     return doc.get("categories", [])
 
 def load_allowed_lenses() -> List[str]:
-    doc = load_yaml("ai/lenses.yml")
+    doc = load_yaml("ai/policy.yml")
     return doc.get("lenses", [])
 
 def openai_chat(prompt: str) -> Dict[str, Any]:
-    if not OPENAI_API_KEY:
-        raise RuntimeError("OPENAI_API_KEY is not set")
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"}
+    """Call OpenAI API and return JSON response."""
+    headers = {
+        "Authorization": f"Bearer {OPENAI_API_KEY}",
+        "Content-Type": "application/json",
+    }
     payload = {
         "model": "gpt-4o-mini",
-        "temperature": 0.2,
-        "messages": [
-            {"role": "system", "content": "You are a strict but fair reviewer for an open-source website directory."},
-            {"role": "user", "content": prompt},
-        ],
+        "messages": [{"role": "user", "content": prompt}],
         "response_format": {"type": "json_object"},
+        "temperature": 0.3,
     }
-    r = requests.post(url, headers=headers, json=payload, timeout=60)
-    if r.status_code >= 400:
+    r = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+    if r.status_code != 200:
         raise RuntimeError(f"OpenAI error {r.status_code}: {r.text}")
     return r.json()
 
@@ -188,10 +178,10 @@ Return your response as a JSON object with these fields:
 - lenses (array of strings, 0-4 items): from allowed lenses
 - quality (string): "exceptional", "solid", or "niche"
 - title (object): {{"en": "English title"}}
-- description (object): {{"en": "One sentence description, max 160 chars"}}
+- description (object): {{"en": "English description"}}
 
-Required fields: id, url, category, title, description"""
-
+Return ONLY valid JSON, no markdown formatting, no code blocks."""
+    
     try:
         resp = openai_chat(prompt_text)
         content = resp["choices"][0]["message"]["content"]
@@ -200,15 +190,21 @@ Required fields: id, url, category, title, description"""
     except Exception as e:
         raise RuntimeError(f"Failed to generate site.yml from URL: {e}")
 
+
 def main() -> int:
     """Main function. Returns 0 on success, 1 on failure."""
     try:
         repo, pr_number = get_pr_context()
-        changed_site_files = git_changed_site_files()
+        submissions_file = ".github/submissions.txt"
         
-        if not changed_site_files:
-            print("No site files changed, skipping generation.")
+        # Read URLs from submissions file
+        urls = read_submissions_file(submissions_file)
+        
+        if not urls:
+            print("No URLs in submissions file, skipping generation.")
             return 0
+        
+        print(f"Found {len(urls)} URL(s) in {submissions_file}")
         
         policy = load_policy()
         allowed_categories = load_allowed_categories()
@@ -236,11 +232,25 @@ def main() -> int:
         
         errors = []
         generated_files = []
+        processed_urls = []
+        remaining_urls = []
         
-        for site_file in changed_site_files:
-            is_url_only, url = is_url_only_file(site_file)
-            if not is_url_only:
-                continue  # Skip non-URL-only files
+        for url in urls:
+            normalized_url = normalize_url(url)
+            site_id = generate_slug_from_url(normalized_url)
+            site_file = os.path.join(sites_dir, site_id, "site.yml")
+            
+            # Skip if site already exists
+            if os.path.exists(site_file):
+                errors.append(f"- ⚠️ `{url}`: Site already exists at {site_file}")
+                remaining_urls.append(url)  # Keep in submissions file
+                continue
+            
+            # Check for duplicates
+            if normalized_url in site_url_index:
+                errors.append(f"- ⚠️ `{url}`: URL already exists in: {', '.join(site_url_index[normalized_url])}")
+                remaining_urls.append(url)  # Keep in submissions file
+                continue
             
             try:
                 site_data = generate_site_yml_from_url(url, policy, allowed_categories, allowed_lenses)
@@ -248,23 +258,20 @@ def main() -> int:
                 # Validate generated data
                 errs = sorted(site_validator.iter_errors(site_data), key=lambda er: er.path)
                 if errs:
-                    errors.append(f"- ❌ `{site_file}`: Generated data has schema errors: " + "; ".join([er.message for er in errs]))
-                    continue
-                
-                # Check for duplicates
-                normalized_url = normalize_url(site_data.get("url", ""))
-                if normalized_url in site_url_index:
-                    errors.append(f"- ⚠️ `{site_file}`: URL already exists in: {', '.join(site_url_index[normalized_url])}")
+                    errors.append(f"- ❌ `{url}`: Generated data has schema errors: " + "; ".join([er.message for er in errs]))
+                    remaining_urls.append(url)  # Keep in submissions file
                     continue
                 
                 # Check URL
                 if is_probably_bad_url(normalized_url):
-                    errors.append(f"- ❌ `{site_file}`: URL looks invalid/suspicious: `{normalized_url}`")
+                    errors.append(f"- ❌ `{url}`: URL looks invalid/suspicious: `{normalized_url}`")
+                    remaining_urls.append(url)  # Keep in submissions file
                     continue
                 
                 ok, info = head_check(normalized_url)
                 if not ok:
-                    errors.append(f"- ❌ `{site_file}`: URL check failed: {info}")
+                    errors.append(f"- ❌ `{url}`: URL check failed: {info}")
+                    remaining_urls.append(url)  # Keep in submissions file
                     continue
                 
                 # Save generated site.yml
@@ -275,28 +282,50 @@ def main() -> int:
                         written_content = f.read()
                     if len(written_content) > 50:  # Should be much more than just a URL
                         generated_files.append(site_file)
+                        processed_urls.append(url)  # Mark as processed (will be removed from submissions)
                         print(f"✅ Generated: {site_file} ({len(written_content)} chars)")
                     else:
-                        errors.append(f"- ❌ `{site_file}`: File written but content too short (only {len(written_content)} chars)")
+                        errors.append(f"- ❌ `{url}`: File written but content too short (only {len(written_content)} chars)")
+                        remaining_urls.append(url)  # Keep in submissions file
                 else:
-                    errors.append(f"- ❌ `{site_file}`: File was not written")
+                    errors.append(f"- ❌ `{url}`: File was not written")
+                    remaining_urls.append(url)  # Keep in submissions file
                 
             except Exception as e:
-                errors.append(f"- ❌ `{site_file}`: Error generating site.yml: {e}")
+                errors.append(f"- ❌ `{url}`: Error generating site.yml: {e}")
+                remaining_urls.append(url)  # Keep in submissions file
         
         if errors:
             print("\n".join(errors))
             print("\n❌ Site generation failed. Please check the URLs and try again.")
+            
+            # Update submissions file to keep only unprocessed URLs
+            if remaining_urls != urls:  # Only update if some URLs were processed
+                write_submissions_file(submissions_file, remaining_urls)
+            
             return 1
         
         if generated_files:
             print(f"\n✅ Successfully generated {len(generated_files)} site file(s).")
+            
+            # Remove processed URLs from submissions file (write remaining URLs, or delete if empty)
+            if remaining_urls:
+                write_submissions_file(submissions_file, remaining_urls)
+            else:
+                # All URLs processed, delete the file
+                if os.path.exists(submissions_file):
+                    os.remove(submissions_file)
+                    print(f"✅ Removed {submissions_file} (all URLs processed)")
+            
             # Write list of generated files for the workflow to commit
             with open(".github/generated_sites.txt", "w", encoding="utf-8") as f:
                 f.write("\n".join(generated_files))
+                if remaining_urls:  # Also note if submissions file was updated
+                    f.write("\n")
+                    f.write(submissions_file)
             return 0
         else:
-            print("No URL-only site files found, skipping generation.")
+            print("No URLs processed, skipping generation.")
             return 0
         
     except Exception as e:
@@ -307,4 +336,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

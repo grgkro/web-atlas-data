@@ -123,17 +123,21 @@ GitHub Pages can serve static files. You'll need to:
 
 For security reasons, new site submissions must follow a URL-only format:
 
-1. Create a new directory under `sites/` with a slug (lowercase, hyphens): `sites/my-site/`
-2. Create `site.yml` containing **only the website URL** (one line, max 200 characters)
-   - Example: `https://example.com`
-   - The file must contain only the URL, nothing else
+1. Create or edit `.github/submissions.txt` in your PR
+2. Add one URL per line (max 200 characters per line)
+   - Example:
+     ```
+     https://example.com
+     https://another-site.org
+     ```
 3. Open a pull request
 4. An automated validation checks the format (script-based, prevents prompt injection)
-5. AI automatically generates the complete site data (category, lenses, title, description, etc.)
-6. The generated `site.yml` is committed to your PR branch
-7. PR is approved and ready for merge
+5. AI automatically generates the complete `sites/<id>/site.yml` files
+6. The generated files are committed to your PR branch
+7. The processed URLs are removed from `.github/submissions.txt` (or the file is deleted if all URLs were processed)
+8. PR is approved and ready for merge
 
-**Note:** For security, users cannot submit full YAML files directly. The AI generates all metadata from the URL to prevent prompt injection attacks.
+**Note:** For security, users cannot submit full YAML files directly. The AI generates all metadata from the URL to prevent prompt injection attacks. The `sites/` directory never contains invalid states—only complete, validated site files.
 
 ### Editing an existing site
 
