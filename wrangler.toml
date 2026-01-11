@@ -1,0 +1,7 @@
+name = "web-atlas"
+pages_build_output_dir = "web"
+
+# Note: Build command is configured in Cloudflare Pages dashboard
+# Build command: npm install && npm run build
+# This file is mainly for CLI deployments with: npx wrangler pages deploy web
+

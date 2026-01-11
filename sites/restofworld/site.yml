@@ -1,0 +1,16 @@
+id: restofworld
+url: https://restofworld.org
+category: News
+lenses:
+  - global
+  - technology
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Rest of World
+description:
+  en: Reporting on how technology affects people outside the Western world.
+
+

@@ -1,0 +1,6 @@
+{
+  "pages_build_output_dir": "web",
+  "build_command": "npm install && npm run build"
+}
+
+

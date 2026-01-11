@@ -1,0 +1,16 @@
+id: missing-semester
+url: https://missing.csail.mit.edu
+category: Build
+lenses:
+  - education
+  - fundamentals
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: The Missing Semester
+description:
+  en: Practical computer science skills rarely taught in formal courses.
+
+

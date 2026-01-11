@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects (same as web/_redirects but at root for detection)
+/indexes/* /indexes/:splat 200
+
+

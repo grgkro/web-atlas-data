@@ -1,0 +1,16 @@
+id: explorable-explanations
+url: https://explorabl.es
+category: Build
+lenses:
+  - learning-by-doing
+  - visualization
+quality: exceptional
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Explorable Explanations
+description:
+  en: Interactive explanations that let readers learn by experimentation.
+
+

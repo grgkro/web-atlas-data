@@ -1,0 +1,10 @@
+id: geoguessr
+url: https://www.geoguessr.com
+category: Play
+lenses:
+  - game
+quality: solid
+title:
+  en: GeoGuessr
+description:
+  en: Geography game that drops you somewhere in the world.

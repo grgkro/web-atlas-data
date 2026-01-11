@@ -1,0 +1,20 @@
+- name: OpenStreetMap
+  url: https://www.openstreetmap.org
+  description: Open, editable map of the world.
+  primary_category: Explore
+  lenses: [open, maps]
+  quality: exceptional
+
+- name: The Pudding
+  url: https://pudding.cool
+  description: Visual essays explaining culture through data.
+  primary_category: Explore
+  lenses: [data, storytelling]
+  quality: exceptional
+
+- name: Atlas Obscura
+  url: https://www.atlasobscura.com
+  description: Guide to the world’s hidden and unusual places.
+  primary_category: Explore
+  lenses: [curiosity]
+  quality: solid

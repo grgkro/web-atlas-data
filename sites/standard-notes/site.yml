@@ -1,0 +1,16 @@
+id: standard-notes
+url: https://standardnotes.com
+category: Tools
+lenses:
+  - privacy
+  - local-first
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Standard Notes
+description:
+  en: End-to-end encrypted note-taking focused on longevity and privacy.
+
+

@@ -1,0 +1,16 @@
+id: radio-garden
+url: https://radio.garden
+category: Explore
+lenses:
+  - audio
+  - maps
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: Radio Garden
+description:
+  en: Explore live radio stations around the world on an interactive globe.
+
+

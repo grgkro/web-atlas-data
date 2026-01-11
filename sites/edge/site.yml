@@ -1,0 +1,16 @@
+id: edge
+url: https://www.edge.org
+category: Knowledge
+lenses:
+  - science
+  - essays
+quality: solid
+tags:
+  popularity: medium
+  maturity: legacy
+title:
+  en: Edge
+description:
+  en: Conversations and essays by leading scientists and thinkers.
+
+

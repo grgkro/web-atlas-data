@@ -1,0 +1,16 @@
+id: falling-sand
+url: https://sandspiel.club
+category: Play
+lenses:
+  - simulation
+  - creative
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Sandspiel
+description:
+  en: Falling-sand physics simulation playable in the browser.
+
+

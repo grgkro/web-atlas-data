@@ -1,0 +1,16 @@
+id: slow-boring
+url: https://www.slowboring.com
+category: News
+lenses:
+  - analysis
+  - longform
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Slow Boring
+description:
+  en: In-depth political and policy analysis beyond daily news cycles.
+
+

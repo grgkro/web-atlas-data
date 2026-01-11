@@ -1,0 +1,6 @@
+# Cloudflare Pages headers configuration
+# This ensures JSON files are served with correct Content-Type
+
+/indexes/*
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600, s-maxage=3600

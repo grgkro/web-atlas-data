@@ -1,0 +1,16 @@
+id: the-conversation
+url: https://theconversation.com
+category: News
+lenses:
+  - analysis
+  - academia
+quality: solid
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: The Conversation
+description:
+  en: News analysis written by academic experts and researchers.
+
+

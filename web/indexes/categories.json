@@ -1,0 +1,37 @@
+{
+  "categories": [
+    {
+      "name": "Build",
+      "count": 7
+    },
+    {
+      "name": "Buy",
+      "count": 3
+    },
+    {
+      "name": "Explore",
+      "count": 6
+    },
+    {
+      "name": "Knowledge",
+      "count": 6
+    },
+    {
+      "name": "News",
+      "count": 5
+    },
+    {
+      "name": "Play",
+      "count": 5
+    },
+    {
+      "name": "Search",
+      "count": 5
+    },
+    {
+      "name": "Tools",
+      "count": 6
+    }
+  ],
+  "totalSites": 43
+}

@@ -1,0 +1,22 @@
+reject:
+  - scam
+  - phishing
+  - malware
+  - nsfw
+  - illegal
+  - hate
+  - harassment
+  - seo_spam
+  - affiliate_spam
+  - deceptive
+
+accept_guidelines:
+  - clearly useful
+  - not a low-effort clone
+  - not primarily marketing
+  - works without forcing an account unless justified
+  - safe for work by default
+
+description_rules:
+  max_chars: 160
+  style: "one sentence, factual, no hype"

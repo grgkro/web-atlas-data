@@ -1,0 +1,16 @@
+id: nand2tetris
+url: https://www.nand2tetris.org
+category: Build
+lenses:
+  - education
+  - fundamentals
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: legacy
+title:
+  en: Nand2Tetris
+description:
+  en: Build a computer from first principles, from logic gates to software.
+
+

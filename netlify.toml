@@ -1,0 +1,16 @@
+[build]
+  command = "npm install && npm run build"
+  publish = "web"
+
+[[redirects]]
+  from = "/indexes/*"
+  to = "/indexes/:splat"
+  status = 200
+
+[[headers]]
+  for = "/indexes/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, s-maxage=3600"
+    Content-Type = "application/json"
+
+

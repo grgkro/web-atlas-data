@@ -1,0 +1,11 @@
+id: the-wiki-game
+url: https://www.thewikigame.com
+category: Play
+lenses:
+  - knowledge
+  - game
+quality: niche
+title:
+  en: The Wiki Game
+description:
+  en: Puzzle game about navigating Wikipedia links.

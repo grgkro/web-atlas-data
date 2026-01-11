@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Atlas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Web Atlas</h1>
+      <p class="subtitle">A curated map of useful websites</p>
+    </header>
+
+    <main id="app">
+      <div id="categories-view" class="categories-grid">
+        <!-- Categories will be rendered here -->
+      </div>
+
+      <div id="sites-view" class="sites-view" style="display: none;">
+        <button id="back-button" class="back-button">← Back to Categories</button>
+        <h2 id="category-title"></h2>
+        <div id="sites-list" class="sites-list">
+          <!-- Sites will be rendered here -->
+        </div>
+      </div>
+
+      <div id="loading" class="loading">Loading...</div>
+      <div id="error" class="error" style="display: none;"></div>
+    </main>
+
+    <footer>
+      <p>Open source directory • <a href="https://github.com">Contribute on GitHub</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+

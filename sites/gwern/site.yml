@@ -1,0 +1,16 @@
+id: gwern
+url: https://www.gwern.net
+category: Knowledge
+lenses:
+  - research
+  - longform
+quality: exceptional
+tags:
+  popularity: low
+  maturity: legacy
+title:
+  en: Gwern.net
+description:
+  en: Deep, data-driven essays on science, psychology, and technology.
+
+

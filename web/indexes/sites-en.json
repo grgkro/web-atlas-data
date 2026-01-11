@@ -1,0 +1,577 @@
+[
+  {
+    "id": "explorable-explanations",
+    "url": "https://explorabl.es",
+    "title": "Explorable Explanations",
+    "description": "Interactive explanations that let readers learn by experimentation.",
+    "category": "Build",
+    "lenses": [
+      "learning-by-doing",
+      "visualization"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "freecodecamp",
+    "url": "https://www.freecodecamp.org",
+    "title": "freeCodeCamp",
+    "description": "Learn programming through interactive lessons and projects.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "free"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "github",
+    "url": "https://github.com",
+    "title": "GitHub",
+    "description": "Platform for building, sharing, and collaborating on software.",
+    "category": "Build",
+    "lenses": [
+      "open-source"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "instructables",
+    "url": "https://www.instructables.com",
+    "title": "Instructables",
+    "description": "Community-driven guides for DIY projects and making.",
+    "category": "Build",
+    "lenses": [
+      "diy"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "mdn-web-docs",
+    "url": "https://developer.mozilla.org",
+    "title": "MDN Web Docs",
+    "description": "Comprehensive documentation and learning resources for web developers.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "reference"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "nand2tetris",
+    "url": "https://www.nand2tetris.org",
+    "title": "Nand2Tetris",
+    "description": "Build a computer from first principles, from logic gates to software.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "fundamentals"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "teachyourselfcs",
+    "url": "https://teachyourselfcs.com",
+    "title": "Teach Yourself Computer Science",
+    "description": "Curated guide to learning core computer science topics deeply.",
+    "category": "Build",
+    "lenses": [
+      "education",
+      "fundamentals"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "amazon",
+    "url": "https://www.amazon.com",
+    "title": "Amazon",
+    "description": "Global online marketplace for goods and digital products.",
+    "category": "Buy",
+    "lenses": [
+      "marketplace"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "bookshop-org",
+    "url": "https://bookshop.org",
+    "title": "Bookshop.org",
+    "description": "Online bookstore supporting independent local bookshops.",
+    "category": "Buy",
+    "lenses": [
+      "ethical"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "etsy",
+    "url": "https://www.etsy.com",
+    "title": "Etsy",
+    "description": "Marketplace for handmade, vintage, and creative goods.",
+    "category": "Buy",
+    "lenses": [
+      "indie"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "atlas-obscura",
+    "url": "https://www.atlasobscura.com",
+    "title": "Atlas Obscura",
+    "description": "Guide to the world’s hidden and unusual places.",
+    "category": "Explore",
+    "lenses": [
+      "curiosity"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "library-of-babel",
+    "url": "https://libraryofbabel.info",
+    "title": "Library of Babel",
+    "description": "Conceptual library containing every possible book of a fixed format.",
+    "category": "Explore",
+    "lenses": [
+      "art",
+      "philosophy"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "old-maps-online",
+    "url": "https://www.oldmapsonline.org",
+    "title": "Old Maps Online",
+    "description": "Searchable collection of historical maps from libraries worldwide.",
+    "category": "Explore",
+    "lenses": [
+      "history",
+      "maps"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "openstreetmap",
+    "url": "https://www.openstreetmap.org",
+    "title": "OpenStreetMap",
+    "description": "Open, editable map of the world.",
+    "category": "Explore",
+    "lenses": [
+      "open",
+      "maps"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "radio-garden",
+    "url": "https://radio.garden",
+    "title": "Radio Garden",
+    "description": "Explore live radio stations around the world on an interactive globe.",
+    "category": "Explore",
+    "lenses": [
+      "audio",
+      "maps"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "the-pudding",
+    "url": "https://pudding.cool",
+    "title": "The Pudding",
+    "description": "Visual essays explaining culture through data.",
+    "category": "Explore",
+    "lenses": [
+      "data",
+      "storytelling"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "khan-academy",
+    "url": "https://www.khanacademy.org",
+    "title": "Khan Academy",
+    "description": "Free, high-quality courses on math, science, and more.",
+    "category": "Knowledge",
+    "lenses": [
+      "education",
+      "free"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "lesswrong",
+    "url": "https://www.lesswrong.com",
+    "title": "LessWrong",
+    "description": "Community essays on rational thinking, decision-making, and AI alignment.",
+    "category": "Knowledge",
+    "lenses": [
+      "thinking",
+      "rationality"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "marginalrevolution",
+    "url": "https://marginalrevolution.com",
+    "title": "Marginal Revolution",
+    "description": "Influential economics blog exploring incentives, markets, and policy.",
+    "category": "Knowledge",
+    "lenses": [
+      "economics",
+      "essays"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "our-world-in-data",
+    "url": "https://ourworldindata.org",
+    "title": "Our World in Data",
+    "description": "Research and data on global living conditions and challenges.",
+    "category": "Knowledge",
+    "lenses": [
+      "data",
+      "research"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "slate-star-codex-archive",
+    "url": "https://slatestarcodex.com",
+    "title": "Slate Star Codex",
+    "description": "Long-form essays on science, medicine, and modern culture.",
+    "category": "Knowledge",
+    "lenses": [
+      "essays",
+      "longform"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "wikipedia",
+    "url": "https://www.wikipedia.org",
+    "title": "Wikipedia",
+    "description": "Free encyclopedia written and maintained by volunteers worldwide.",
+    "category": "Knowledge",
+    "lenses": [
+      "open",
+      "reference"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "bbc-news",
+    "url": "https://www.bbc.com/news",
+    "title": "BBC News",
+    "description": "International news coverage from a public broadcaster.",
+    "category": "News",
+    "lenses": [
+      "journalism"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "propublica",
+    "url": "https://www.propublica.org",
+    "title": "ProPublica",
+    "description": "Investigative journalism in the public interest.",
+    "category": "News",
+    "lenses": [
+      "investigation"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "slow-boring",
+    "url": "https://www.slowboring.com",
+    "title": "Slow Boring",
+    "description": "In-depth political and policy analysis beyond daily news cycles.",
+    "category": "News",
+    "lenses": [
+      "analysis",
+      "longform"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "the-conversation",
+    "url": "https://theconversation.com",
+    "title": "The Conversation",
+    "description": "News analysis written by academic experts and researchers.",
+    "category": "News",
+    "lenses": [
+      "analysis",
+      "academia"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "the-guardian",
+    "url": "https://www.theguardian.com",
+    "title": "The Guardian",
+    "description": "Independent journalism with a global focus.",
+    "category": "News",
+    "lenses": [
+      "journalism",
+      "open-access"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "a-dark-room",
+    "url": "https://adarkroom.doublespeakgames.com",
+    "title": "A Dark Room",
+    "description": "Minimalist browser-based text game.",
+    "category": "Play",
+    "lenses": [
+      "indie"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "candybox2",
+    "url": "https://candybox2.github.io",
+    "title": "Candy Box 2",
+    "description": "Deceptively simple incremental game that hides surprising depth.",
+    "category": "Play",
+    "lenses": [
+      "indie",
+      "experimental"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "legacy"
+    }
+  },
+  {
+    "id": "geoguessr",
+    "url": "https://www.geoguessr.com",
+    "title": "GeoGuessr",
+    "description": "Geography game that drops you somewhere in the world.",
+    "category": "Play",
+    "lenses": [
+      "game"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "littlealchemy2",
+    "url": "https://littlealchemy2.com",
+    "title": "Little Alchemy 2",
+    "description": "Combine elements to discover new items in a playful sandbox.",
+    "category": "Play",
+    "lenses": [
+      "creative",
+      "casual"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "high",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "the-wiki-game",
+    "url": "https://www.thewikigame.com",
+    "title": "The Wiki Game",
+    "description": "Puzzle game about navigating Wikipedia links.",
+    "category": "Play",
+    "lenses": [
+      "knowledge",
+      "game"
+    ],
+    "quality": "niche"
+  },
+  {
+    "id": "duckduckgo",
+    "url": "https://duckduckgo.com",
+    "title": "DuckDuckGo",
+    "description": "Privacy-focused general search engine.",
+    "category": "Search",
+    "lenses": [
+      "privacy"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "kagi",
+    "url": "https://kagi.com",
+    "title": "Kagi",
+    "description": "Paid search engine with no ads and high-quality results.",
+    "category": "Search",
+    "lenses": [
+      "no-ads",
+      "paid"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "marginalia-search",
+    "url": "https://search.marginalia.nu",
+    "title": "Marginalia Search",
+    "description": "Search engine focused on non-SEO, human-written content.",
+    "category": "Search",
+    "lenses": [
+      "indie",
+      "no-ads"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "experimental"
+    }
+  },
+  {
+    "id": "wiby",
+    "url": "https://wiby.me",
+    "title": "Wiby",
+    "description": "Search engine for small, non-commercial, retro-style websites.",
+    "category": "Search",
+    "lenses": [
+      "minimal",
+      "indie"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "low",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "wolframalpha",
+    "url": "https://www.wolframalpha.com",
+    "title": "WolframAlpha",
+    "description": "Computational knowledge engine for factual and scientific queries.",
+    "category": "Search",
+    "lenses": [
+      "education"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "drawio",
+    "url": "https://app.diagrams.net",
+    "title": "diagrams.net",
+    "description": "Free, browser-based tool for creating diagrams and flowcharts.",
+    "category": "Tools",
+    "lenses": [
+      "design",
+      "no-install"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "excalidraw",
+    "url": "https://excalidraw.com",
+    "title": "Excalidraw",
+    "description": "Simple, collaborative whiteboard with a hand-drawn feel.",
+    "category": "Tools",
+    "lenses": [
+      "open",
+      "collaboration"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "notion",
+    "url": "https://www.notion.so",
+    "title": "Notion",
+    "description": "All-in-one workspace for notes, documents, and collaboration.",
+    "category": "Tools",
+    "lenses": [
+      "productivity"
+    ],
+    "quality": "solid"
+  },
+  {
+    "id": "obsidian",
+    "url": "https://obsidian.md",
+    "title": "Obsidian",
+    "description": "Local-first note-taking tool based on linked markdown files.",
+    "category": "Tools",
+    "lenses": [
+      "thinking",
+      "local-first"
+    ],
+    "quality": "exceptional",
+    "tags": {
+      "popularity": "medium",
+      "maturity": "stable"
+    }
+  },
+  {
+    "id": "photopea",
+    "url": "https://www.photopea.com",
+    "title": "Photopea",
+    "description": "Advanced image editor that runs entirely in the browser.",
+    "category": "Tools",
+    "lenses": [
+      "design",
+      "no-install"
+    ],
+    "quality": "exceptional"
+  },
+  {
+    "id": "simpler-wiki",
+    "url": "https://simple.wikipedia.org",
+    "title": "Simple English Wikipedia",
+    "description": "Wikipedia written in simplified English for clarity and accessibility.",
+    "category": "Tools",
+    "lenses": [
+      "education",
+      "accessibility"
+    ],
+    "quality": "solid",
+    "tags": {
+      "popularity": "low",
+      "maturity": "legacy"
+    }
+  }
+]

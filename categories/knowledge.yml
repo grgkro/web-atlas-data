@@ -1,0 +1,20 @@
+- name: Wikipedia
+  url: https://www.wikipedia.org
+  description: Free encyclopedia written and maintained by volunteers worldwide.
+  primary_category: Knowledge
+  lenses: [open, reference]
+  quality: exceptional
+
+- name: Khan Academy
+  url: https://www.khanacademy.org
+  description: Free, high-quality courses on math, science, and more.
+  primary_category: Knowledge
+  lenses: [education, free]
+  quality: solid
+
+- name: Our World in Data
+  url: https://ourworldindata.org
+  description: Research and data on global living conditions and challenges.
+  primary_category: Knowledge
+  lenses: [data, research]
+  quality: exceptional

@@ -1,0 +1,16 @@
+id: itch
+url: https://itch.io
+category: Buy
+lenses:
+  - indie
+  - creative
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: itch.io
+description:
+  en: Marketplace for independent games and experimental projects.
+
+

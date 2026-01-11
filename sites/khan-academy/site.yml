@@ -1,0 +1,11 @@
+id: khan-academy
+url: https://www.khanacademy.org
+category: Knowledge
+lenses:
+  - education
+  - free
+quality: solid
+title:
+  en: Khan Academy
+description:
+  en: Free, high-quality courses on math, science, and more.
