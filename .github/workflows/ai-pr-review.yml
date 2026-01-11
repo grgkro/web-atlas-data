@@ -82,28 +82,51 @@ jobs:
 
           # Add each generated file listed (strip CRLF!)
           files_added=0
-          while IFS= read -r raw; do
-            file="$(printf '%s' "$raw" | tr -d '\r' | xargs)"
+          echo "Reading files from .github/generated_sites.txt:"
+          while IFS= read -r raw || [ -n "$raw" ]; do
+            # Strip carriage returns and trim whitespace
+            file="$(printf '%s' "$raw" | tr -d '\r\n' | xargs)"
             if [ -z "$file" ]; then
+              echo "Skipping empty line"
               continue
             fi
+            echo "Processing file path: '$file'"
             if [ -f "$file" ]; then
-              echo "Checking file: $file"
-              # Check if file has changes before adding
+              echo "  ✓ File exists"
+              # Check git status of file
               if git diff --quiet "$file" 2>/dev/null; then
-                echo "  File has no changes, checking if it exists in git..."
+                echo "  ⚠ File exists but git diff shows no changes"
+                echo "  Checking if file is tracked:"
                 if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-                  echo "  File is tracked but unchanged, force adding anyway"
+                  echo "  ✓ File is tracked"
+                  echo "  Force adding file anyway..."
                 else
-                  echo "  File is untracked, will add"
+                  echo "  ⚠ File is not tracked"
+                  echo "  Adding as new file..."
                 fi
               else
-                echo "  File has changes, adding"
+                echo "  ✓ File has changes according to git diff"
               fi
-              git add -f "$file"
-              files_added=$((files_added + 1))
+              # Add the file
+              if git add -f "$file"; then
+                echo "  ✓ git add command succeeded"
+                # Verify it was staged by checking if it appears in staged changes
+                if git diff --cached --name-only | grep -q "^$file$"; then
+                  echo "  ✓ File successfully staged (appears in staged changes)"
+                  files_added=$((files_added + 1))
+                else
+                  echo "  ⚠ git add succeeded but file not in staged changes list"
+                  echo "  Checking git status for this file:"
+                  git status -- "$file" || true
+                fi
+              else
+                echo "  ❌ git add failed for: $file"
+              fi
             else
-              echo "⚠️ Listed file not found: '$file'"
+              echo "  ❌ File not found: '$file'"
+              echo "  Current directory: $(pwd)"
+              echo "  Listing sites directory:"
+              ls -la sites/ 2>&1 | head -20 || true
             fi
           done < .github/generated_sites.txt
           
