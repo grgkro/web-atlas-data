@@ -112,52 +112,50 @@ def main() -> int:
         submissions_file = ".github/submissions.txt"
         has_submissions = os.path.exists(submissions_file)
         submissions_valid = False
+        submissions_error = ""
         if has_submissions:
-            submissions_valid, _ = validate_submissions_file(submissions_file)
-        
-        # Determine if this is a contributor PR or bot-result PR
-        is_contributor_pr = has_submissions and submissions_valid
-        
-        # Check if PR is from bot (using authenticated GitHub identity from event payload, not spoofable git author)
-        # SECURITY: We use pr_author (from GitHub event payload) instead of git commit author because
-        # git commit author fields can be spoofed locally. The GitHub event payload pr_author is
-        # authenticated and cannot be spoofed by contributors.
-        BOT_USERNAME = "web-atlas-bot"
-        is_bot_pr = pr_author == BOT_USERNAME
-        
-        # Get base commit for checking what files are actually new
-        base = sh(["git", "merge-base", "origin/main", "HEAD"])
-        new_site_files = [
+            submissions_valid, submissions_error = validate_submissions_file(submissions_file)
+
+        # Determine patterns based on changed files
+        site_files_changed = [
             f for f in changed_files
-            if re.match(r'^sites/[^/]+/site\.yml$', f) and
-            f in sh(["git", "diff", "--name-only", "--diff-filter=A", f"{base}...HEAD"]).splitlines()
+            if re.match(r"^sites/[^/]+/site\.ya?ml$", f)
         ]
-        
-        # Validate file changes based on PR type
-        errors = []
-        warnings = []
-        
+
+        # Contributor submission PR:
+        # - submissions.txt exists AND valid
+        # - AND no other files changed
+        is_contributor_pr = submissions_valid and (set(changed_files) == {submissions_file})
+
+        # Bot-result pattern (after generation commit):
+        # - submissions.txt is gone OR invalid/empty (since it's removed/consumed)
+        # - AND at least one site.yml changed
+        # - AND no other files changed besides site.yml files (and optionally deletion of submissions.txt)
+        allowed_bot_files = set(site_files_changed)
+        if submissions_file in changed_files:
+            allowed_bot_files.add(submissions_file)
+
+        is_bot_result_pattern = (
+            len(site_files_changed) > 0
+            and set(changed_files).issubset(allowed_bot_files)
+            and (not submissions_valid)  # because submissions should be "consumed" after generation
+        )
+
         # Build allowed files list based on PR type
         if is_contributor_pr:
-            # Case 1: Contributor submission PR
-            # Only allow .github/submissions.txt
             allowed_files = {submissions_file}
             pr_type = "contributor submission"
-        elif not has_submissions and new_site_files and is_bot_pr:
-            # Case 2: Bot result PR
-            # Allow sites/<id>/site.yml, .github/submissions.txt (deletion)
-            allowed_files = set()
-            for f in changed_files:
-                if re.match(r'^sites/[^/]+/site\.yml$', f):
-                    allowed_files.add(f)
-                elif f == submissions_file:
-                    allowed_files.add(f)  # Allow deletion/modification
-            pr_type = "bot result"
+        elif is_bot_result_pattern:
+            allowed_files = allowed_bot_files
+            pr_type = "generated result"
         else:
-            # Unknown/invalid PR type
-            allowed_files = set()  # No files allowed for invalid PR type
-            errors.append(f"Invalid PR type: submissions.txt exists={has_submissions}, valid={submissions_valid}, bot_pr={is_bot_pr}, new_site_files={len(new_site_files)}")
+            allowed_files = set()
             pr_type = "invalid"
+            errors.append(
+                f"Invalid PR type. changed_files={changed_files}, "
+                f"submissions_exists={has_submissions}, submissions_valid={submissions_valid}, "
+                f"site_files_changed={site_files_changed}"
+            )
         
         # Check for disallowed files (unless maintainer)
         for filepath in changed_files:
@@ -175,9 +173,8 @@ def main() -> int:
         # Additional validation for contributor PRs
         if is_contributor_pr:
             # Validate submissions.txt format
-            is_valid, error_msg = validate_submissions_file(submissions_file)
-            if not is_valid:
-                errors.append(f"❌ {submissions_file}: {error_msg}")
+            if not submissions_valid:
+                errors.append(f"❌ {submissions_file}: {submissions_error}")
         
         # Report results
         if errors:
