@@ -161,48 +161,39 @@ def generate_site_yml_from_url(url: str, policy: Dict[str, Any], allowed_categor
     # Generate slug
     slug = generate_slug_from_url(url)
     
-    prompt = {
-        "task": "Generate a complete site.yml entry for a website directory from a URL.",
-        "url": url,
-        "url_content_preview": url_content,
-        "policy": policy,
-        "allowed_categories": allowed_categories,
-        "allowed_lenses": allowed_lenses,
-        "schema": {
-            "id": "slug identifier (lowercase, hyphens only, based on domain)",
-            "url": "the provided URL",
-            "category": "one of: " + ", ".join(allowed_categories),
-            "lenses": "array of 0-4 lenses from allowed_lenses",
-            "quality": "exceptional | solid | niche",
-            "title": {"en": "English title (short, clear)"},
-            "description": {"en": "One sentence, max 160 chars, factual, no marketing"}
-        },
-        "instructions": [
-            "Visit or analyze the URL to understand what the website is",
-            "Generate id as a slug from the domain (e.g., 'example-com' from 'example.com')",
-            "Choose the most appropriate category",
-            "Select relevant lenses (0-4 maximum)",
-            "Assess quality: exceptional (unusually high quality), solid (reliable/established), niche (specific audience)",
-            "Write a clear, factual title",
-            "Write a one-sentence description (max 160 chars), factual, no marketing fluff"
-        ],
-        "output_format": {
-            "type": "object",
-            "required": ["id", "url", "category", "title", "description"],
-            "properties": {
-                "id": {"type": "string"},
-                "url": {"type": "string"},
-                "category": {"type": "string"},
-                "lenses": {"type": "array", "items": {"type": "string"}},
-                "quality": {"type": "string", "enum": ["exceptional", "solid", "niche"]},
-                "title": {"type": "object", "properties": {"en": {"type": "string"}}},
-                "description": {"type": "object", "properties": {"en": {"type": "string", "maxLength": 160}}}
-            }
-        }
-    }
-    
+    # Build a text prompt that explicitly mentions JSON (required by OpenAI API)
+    prompt_text = f"""Generate a complete site.yml entry for a website directory from a URL. You must return your response as valid JSON.
+
+URL: {url}
+{("Page preview: " + url_content) if url_content else ""}
+
+Policy: {json.dumps(policy, indent=2)}
+
+Allowed categories: {', '.join(allowed_categories)}
+Allowed lenses: {', '.join(allowed_lenses)}
+
+Instructions:
+1. Analyze the URL to understand what the website is
+2. Generate id as a slug from the domain (e.g., 'example-com' from 'example.com')
+3. Choose the most appropriate category from the allowed list
+4. Select 0-4 relevant lenses from the allowed list
+5. Assess quality: exceptional (unusually high quality), solid (reliable/established), or niche (specific audience)
+6. Write a clear, factual title
+7. Write a one-sentence description (max 160 chars), factual, no marketing fluff
+
+Return your response as a JSON object with these fields:
+- id (string): slug identifier (lowercase, hyphens only)
+- url (string): the provided URL
+- category (string): one of {', '.join(allowed_categories)}
+- lenses (array of strings, 0-4 items): from allowed lenses
+- quality (string): "exceptional", "solid", or "niche"
+- title (object): {{"en": "English title"}}
+- description (object): {{"en": "One sentence description, max 160 chars"}}
+
+Required fields: id, url, category, title, description"""
+
     try:
-        resp = openai_chat(json.dumps(prompt, ensure_ascii=False, indent=2))
+        resp = openai_chat(prompt_text)
         content = resp["choices"][0]["message"]["content"]
         result = json.loads(content)
         return result
