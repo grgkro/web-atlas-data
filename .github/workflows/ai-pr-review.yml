@@ -105,7 +105,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ ! -f ".github/generated_sites.txt" ]; then
+          if [ ! -f "generated_files.txt" ] || [ ! -s "generated_files.txt" ]; then
             echo "No generated files list found, nothing to commit"
             exit 0
           fi
@@ -113,14 +113,14 @@ jobs:
           git config --local user.email "web-atlas-bot@users.noreply.github.com"
           git config --local user.name "web-atlas-bot"
 
-          echo "Generated files list:"
-          cat .github/generated_sites.txt || true
+          echo "Generated files:"
+          cat generated_files.txt || true
 
           # Add generated site files
           files_added=0
           while IFS= read -r file || [ -n "$file" ]; do
             file=$(printf '%s' "$file" | tr -d '\r\n' | xargs)
-            if [ -z "$file" ] || [ "$file" = ".github/submissions.txt" ]; then
+            if [ -z "$file" ]; then
               continue
             fi
             if [ -f "$file" ]; then
@@ -128,7 +128,7 @@ jobs:
               files_added=$((files_added + 1))
               echo "✅ Added: $file"
             fi
-          done < .github/generated_sites.txt
+          done < generated_files.txt
 
           # Handle submissions.txt (may be deleted or updated)
           if [ -f ".github/submissions.txt" ]; then
@@ -137,12 +137,9 @@ jobs:
             git add .github/submissions.txt  # Stage deletion
           fi
 
-          # Add generated_sites.txt (tracking file)
-          git add .github/generated_sites.txt
-
           # Check if we have actual changes to commit
-          if git diff --cached --quiet -- . ':!.github/generated_sites.txt'; then
-            echo "❌ No staged changes for site files"
+          if git diff --cached --quiet; then
+            echo "❌ No staged changes"
             exit 1
           fi
 
