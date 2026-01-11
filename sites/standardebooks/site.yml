@@ -1,1 +1,13 @@
-https://standardebooks.org
+id: standard-ebooks
+url: https://standardebooks.org
+category: Knowledge
+lenses:
+- free
+- education
+- open
+quality: solid
+title:
+  en: Standard Ebooks
+description:
+  en: Standard Ebooks offers free and liberated ebooks, carefully produced for book
+    lovers.
