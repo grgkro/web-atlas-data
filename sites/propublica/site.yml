@@ -1,0 +1,10 @@
+id: propublica
+url: https://www.propublica.org
+category: News
+lenses:
+  - investigation
+quality: exceptional
+title:
+  en: ProPublica
+description:
+  en: Investigative journalism in the public interest.

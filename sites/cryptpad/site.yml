@@ -1,0 +1,16 @@
+id: cryptpad
+url: https://cryptpad.fr
+category: Tools
+lenses:
+  - privacy
+  - collaboration
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: CryptPad
+description:
+  en: Privacy-first collaborative documents with end-to-end encryption.
+
+

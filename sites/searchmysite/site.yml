@@ -1,0 +1,16 @@
+id: searchmysite
+url: https://searchmysite.net
+category: Search
+lenses:
+  - indie
+  - no-ads
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Search My Site
+description:
+  en: Search engine indexing only personal and independent websites.
+
+

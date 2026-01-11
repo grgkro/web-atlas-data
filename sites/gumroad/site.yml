@@ -1,0 +1,16 @@
+id: gumroad
+url: https://gumroad.com
+category: Buy
+lenses:
+  - indie
+  - creator-economy
+quality: solid
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: Gumroad
+description:
+  en: Platform for creators to sell digital products directly.
+
+

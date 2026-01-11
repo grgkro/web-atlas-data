@@ -1,0 +1,10 @@
+id: github
+url: https://github.com
+category: Build
+lenses:
+  - open-source
+quality: solid
+title:
+  en: GitHub
+description:
+  en: Platform for building, sharing, and collaborating on software.

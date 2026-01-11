@@ -1,0 +1,16 @@
+id: old-maps-online
+url: https://www.oldmapsonline.org
+category: Explore
+lenses:
+  - history
+  - maps
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Old Maps Online
+description:
+  en: Searchable collection of historical maps from libraries worldwide.
+
+

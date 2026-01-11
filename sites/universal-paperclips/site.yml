@@ -1,0 +1,16 @@
+id: universal-paperclips
+url: https://www.decisionproblem.com/paperclips
+category: Play
+lenses:
+  - philosophy
+  - incremental
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: legacy
+title:
+  en: Universal Paperclips
+description:
+  en: Incremental game exploring AI, optimization, and unintended consequences.
+
+

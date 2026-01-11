@@ -1,0 +1,10 @@
+id: wolframalpha
+url: https://www.wolframalpha.com
+category: Search
+lenses:
+  - education
+quality: solid
+title:
+  en: WolframAlpha
+description:
+  en: Computational knowledge engine for factual and scientific queries.

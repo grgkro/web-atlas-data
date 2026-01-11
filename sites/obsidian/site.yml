@@ -1,0 +1,16 @@
+id: obsidian
+url: https://obsidian.md
+category: Tools
+lenses:
+  - thinking
+  - local-first
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: Obsidian
+description:
+  en: Local-first note-taking tool based on linked markdown files.
+
+

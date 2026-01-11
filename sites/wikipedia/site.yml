@@ -1,0 +1,11 @@
+id: wikipedia
+url: https://www.wikipedia.org
+category: Knowledge
+lenses:
+  - open
+  - reference
+quality: exceptional
+title:
+  en: Wikipedia
+description:
+  en: Free encyclopedia written and maintained by volunteers worldwide.

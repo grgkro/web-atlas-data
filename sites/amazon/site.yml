@@ -1,0 +1,10 @@
+id: amazon
+url: https://www.amazon.com
+category: Buy
+lenses:
+  - marketplace
+quality: solid
+title:
+  en: Amazon
+description:
+  en: Global online marketplace for goods and digital products.

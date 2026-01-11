@@ -1,0 +1,17 @@
+{
+  "name": "web-atlas-data",
+  "version": "1.0.0",
+  "description": "Structured data for Web Atlas directory",
+  "scripts": {
+    "migrate": "node tools/migrate-to-site-format.js",
+    "build": "node tools/build-indexes.js && npm run copy-indexes",
+    "prebuild": "npm run migrate || true",
+    "copy-indexes": "node tools/copy-indexes.js",
+    "dev": "npm run build && npx serve web -p 8000",
+    "test": "node -e \"require('./tools/build-indexes.js')\""
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}
+

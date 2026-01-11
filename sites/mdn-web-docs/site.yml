@@ -1,0 +1,11 @@
+id: mdn-web-docs
+url: https://developer.mozilla.org
+category: Build
+lenses:
+  - education
+  - reference
+quality: solid
+title:
+  en: MDN Web Docs
+description:
+  en: Comprehensive documentation and learning resources for web developers.

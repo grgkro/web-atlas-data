@@ -1,0 +1,10 @@
+id: atlas-obscura
+url: https://www.atlasobscura.com
+category: Explore
+lenses:
+  - curiosity
+quality: solid
+title:
+  en: Atlas Obscura
+description:
+  en: Guide to the world’s hidden and unusual places.

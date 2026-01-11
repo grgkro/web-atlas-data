@@ -1,0 +1,11 @@
+id: openstreetmap
+url: https://www.openstreetmap.org
+category: Explore
+lenses:
+  - open
+  - maps
+quality: exceptional
+title:
+  en: OpenStreetMap
+description:
+  en: Open, editable map of the world.

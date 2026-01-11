@@ -1,0 +1,21 @@
+- name: DuckDuckGo
+  url: https://duckduckgo.com
+  description: Privacy-focused general search engine.
+  primary_category: Search
+  lenses: [privacy]
+  quality: solid
+
+- name: Kagi
+  url: https://kagi.com
+  description: Paid search engine with no ads and high-quality results.
+  primary_category: Search
+  lenses: [no-ads, paid]
+  quality: exceptional
+
+- name: WolframAlpha
+  url: https://www.wolframalpha.com
+  description: Computational knowledge engine for factual and scientific queries.
+  primary_category: Search
+  lenses: [education]
+  quality: solid
+

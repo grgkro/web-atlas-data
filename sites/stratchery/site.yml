@@ -1,0 +1,16 @@
+id: stratchery
+url: https://stratechery.com
+category: News
+lenses:
+  - analysis
+  - technology
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: Stratechery
+description:
+  en: Deep analysis of technology and business strategy.
+
+

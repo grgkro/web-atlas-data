@@ -1,0 +1,13 @@
+id: lesswrong
+url: https://www.lesswrong.com
+category: Knowledge
+lenses: [thinking, rationality]
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: LessWrong
+description:
+  en: Community essays on rational thinking, decision-making, and AI alignment.
+

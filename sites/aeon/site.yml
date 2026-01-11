@@ -1,0 +1,16 @@
+id: aeon
+url: https://aeon.co
+category: Knowledge
+lenses:
+  - philosophy
+  - essays
+quality: exceptional
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: Aeon
+description:
+  en: Long-form essays on philosophy, science, and culture.
+
+

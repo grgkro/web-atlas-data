@@ -1,0 +1,16 @@
+id: drawio
+url: https://app.diagrams.net
+category: Tools
+lenses:
+  - design
+  - no-install
+quality: solid
+tags:
+  popularity: medium
+  maturity: stable
+title:
+  en: diagrams.net
+description:
+  en: Free, browser-based tool for creating diagrams and flowcharts.
+
+

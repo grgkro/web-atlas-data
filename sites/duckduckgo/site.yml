@@ -1,0 +1,10 @@
+id: duckduckgo
+url: https://duckduckgo.com
+category: Search
+lenses:
+  - privacy
+quality: solid
+title:
+  en: DuckDuckGo
+description:
+  en: Privacy-focused general search engine.

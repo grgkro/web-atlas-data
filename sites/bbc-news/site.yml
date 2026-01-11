@@ -1,0 +1,10 @@
+id: bbc-news
+url: https://www.bbc.com/news
+category: News
+lenses:
+  - journalism
+quality: solid
+title:
+  en: BBC News
+description:
+  en: International news coverage from a public broadcaster.

@@ -1,0 +1,16 @@
+id: libreoffice-online
+url: https://www.collaboraoffice.com/collabora-online
+category: Tools
+lenses:
+  - open-source
+  - collaboration
+quality: solid
+tags:
+  popularity: low
+  maturity: stable
+title:
+  en: Collabora Online
+description:
+  en: Open-source online office suite based on LibreOffice.
+
+

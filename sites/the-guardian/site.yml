@@ -1,0 +1,11 @@
+id: the-guardian
+url: https://www.theguardian.com
+category: News
+lenses:
+  - journalism
+  - open-access
+quality: solid
+title:
+  en: The Guardian
+description:
+  en: Independent journalism with a global focus.

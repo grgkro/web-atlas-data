@@ -1,0 +1,15 @@
+id: simpler-wiki
+url: https://simple.wikipedia.org
+category: Tools
+lenses:
+  - education
+  - accessibility
+quality: solid
+tags:
+  popularity: low
+  maturity: legacy
+title:
+  en: Simple English Wikipedia
+description:
+  en: Wikipedia written in simplified English for clarity and accessibility.
+

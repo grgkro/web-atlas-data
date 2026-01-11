@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["id", "url", "category"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique slug identifier (lowercase, hyphens)"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["Search", "Knowledge", "Tools", "News", "Buy", "Build", "Play", "Explore"]
+    },
+    "lenses": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "quality": {
+      "type": "string",
+      "enum": ["exceptional", "solid", "niche"]
+    },
+    "title": {
+      "type": "object",
+      "description": "Localized titles",
+      "patternProperties": {
+        "^[a-z]{2}$": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "description": {
+      "type": "object",
+      "description": "Localized descriptions",
+      "patternProperties": {
+        "^[a-z]{2}$": { "type": "string", "maxLength": 160 }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "object",
+      "description": "Optional tags for filtering",
+      "properties": {
+        "popularity": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "hidden"]
+        },
+        "maturity": {
+          "type": "string",
+          "enum": ["new", "experimental", "stable", "established", "legacy"]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+
