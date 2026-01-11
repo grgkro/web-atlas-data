@@ -72,21 +72,35 @@ jobs:
           git config --local user.email "web-atlas-bot@users.noreply.github.com"
           git config --local user.name "web-atlas-bot"
           
-          # Read list of generated files and add them
-          files_to_add=0
+          # Add generated files
           while IFS= read -r file; do
             if [ -n "$file" ] && [ -f "$file" ]; then
+              echo "Adding file: $file"
               git add "$file"
-              files_to_add=$((files_to_add + 1))
             fi
           done < .github/generated_sites.txt
           
-          if [ $files_to_add -eq 0 ]; then
-            echo "No files to commit"
-            exit 0
+          # Check if there are actually staged changes
+          if git diff --cached --quiet; then
+            echo "❌ No changes detected after adding files"
+            echo "Git status:"
+            git status
+            echo "Checking if files were modified:"
+            while IFS= read -r file; do
+              if [ -n "$file" ] && [ -f "$file" ]; then
+                echo "File: $file"
+                if git diff --quiet "$file"; then
+                  echo "  - No changes detected"
+                else
+                  echo "  - Has changes (unstaged)"
+                fi
+              fi
+            done < .github/generated_sites.txt
+            exit 1
           fi
           
-          # Commit (will fail if nothing to commit, but we checked above)
+          # Commit the staged changes
+          echo "Staging changes detected, committing..."
           git commit -m "chore: AI generate site.yml from URL submissions"
           
           # Push to the PR branch (will fail if push fails - this is intentional)
