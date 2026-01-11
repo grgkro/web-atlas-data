@@ -13,7 +13,7 @@ on:
       - ".github/scripts/**"
 
 permissions:
-  contents: write          # needed only if you enable auto-fix commits
+  contents: write          # needed for generating and committing site files
   pull-requests: write     # comment on PR
   issues: write            # sometimes needed for comments depending on org settings
 
@@ -22,14 +22,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  review:
+  generate-site:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -46,7 +47,71 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           python .github/scripts/validate_pr_format.py
-        continue-on-error: false
+
+      - name: Generate site files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ENABLE_URL_FETCH: "true"
+        run: |
+          python .github/scripts/generate_site_from_url.py
+
+      - name: Commit and push generated files
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e  # Exit on any error
+          
+          # Check if any files were generated
+          if [ ! -f ".github/generated_sites.txt" ]; then
+            echo "No generated files, skipping commit"
+            exit 0
+          fi
+          
+          # Configure git
+          git config --local user.email "web-atlas-bot@users.noreply.github.com"
+          git config --local user.name "web-atlas-bot"
+          
+          # Read list of generated files and add them
+          files_to_add=0
+          while IFS= read -r file; do
+            if [ -n "$file" ] && [ -f "$file" ]; then
+              git add "$file"
+              files_to_add=$((files_to_add + 1))
+            fi
+          done < .github/generated_sites.txt
+          
+          if [ $files_to_add -eq 0 ]; then
+            echo "No files to commit"
+            exit 0
+          fi
+          
+          # Commit (will fail if nothing to commit, but we checked above)
+          git commit -m "chore: AI generate site.yml from URL submissions"
+          
+          # Push to the PR branch (will fail if push fails - this is intentional)
+          git push
+          echo "✅ Successfully committed and pushed generated site files"
+
+  review:
+    runs-on: ubuntu-latest
+    needs: generate-site  # Wait for site generation to complete
+    
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml jsonschema requests
 
       - name: Run AI reviewer
         env:

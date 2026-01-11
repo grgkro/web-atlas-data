@@ -302,7 +302,7 @@ def openai_chat(prompt: str) -> Dict[str, Any]:
     url = "https://api.openai.com/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"}
     payload = {
-        "model": "gpt-4.1-mini",
+        "model": "gpt-4o-mini",
         "temperature": 0.2,
         "messages": [
             {"role": "system", "content": "You are a strict but fair reviewer for an open-source website directory."},
@@ -425,10 +425,13 @@ def main() -> None:
     allowed_lenses = load_allowed_lenses()
 
     # ===== Process URL-only site submissions =====
+    # Note: URL-only site generation is now handled by the generate-site job
+    # This job only handles review of already-generated files and category files
     changed_site_files = git_changed_site_files()
     url_only_sites_processed = False
     
-    if changed_site_files:
+    # Skip URL-only site generation here - it's handled by generate-site job
+    if False and changed_site_files:
         site_validator = load_site_schema_validator()
         site_errors = []
         generated_files = []
