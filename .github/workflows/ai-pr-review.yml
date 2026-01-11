@@ -67,6 +67,45 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Check if submissions.txt exists and has URLs - if not, verify this is a safe second run
+          if [ ! -f ".github/submissions.txt" ]; then
+            echo "No submissions.txt file found. Checking if this is a safe second run after bot commit..."
+            
+            # Get the base commit to compare against
+            BASE=$(git merge-base origin/main HEAD)
+            
+            # Check if there are any new site files in this PR
+            NEW_SITE_FILES=$(git diff --name-only --diff-filter=A "${BASE}...HEAD" | grep -E '^sites/[^/]+/site\.yml$' || true)
+            
+            if [ -n "$NEW_SITE_FILES" ]; then
+              # There are new site files - verify the latest commit was from the bot
+              LATEST_COMMIT_AUTHOR=$(git log -1 --format='%an')
+              LATEST_COMMIT_EMAIL=$(git log -1 --format='%ae')
+              
+              if [ "$LATEST_COMMIT_AUTHOR" = "web-atlas-bot" ] && [ "$LATEST_COMMIT_EMAIL" = "web-atlas-bot@users.noreply.github.com" ]; then
+                echo "✅ No submissions.txt, but latest commit is from bot (safe second run), skipping commit"
+                exit 0
+              else
+                echo "❌ Security issue: No submissions.txt found, but new site files exist and latest commit is NOT from bot"
+                echo "Latest commit author: $LATEST_COMMIT_AUTHOR <$LATEST_COMMIT_EMAIL>"
+                echo "New site files detected:"
+                echo "$NEW_SITE_FILES"
+                echo "All site files must be submitted via .github/submissions.txt for security validation."
+                exit 1
+              fi
+            else
+              # No new site files, safe to skip
+              echo "No submissions.txt and no new site files, skipping commit"
+              exit 0
+            fi
+          fi
+          
+          # Check if submissions.txt has any URLs (non-empty, non-comment lines)
+          if ! grep -v '^[[:space:]]*#' .github/submissions.txt | grep -q '[^[:space:]]'; then
+            echo "No URLs in submissions.txt (already processed in previous run), skipping commit"
+            exit 0
+          fi
+          
           if [ ! -f ".github/generated_sites.txt" ]; then
             echo "No generated files, skipping commit"
             exit 0
