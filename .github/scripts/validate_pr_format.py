@@ -155,6 +155,7 @@ def main() -> int:
             pr_type = "bot result"
         else:
             # Unknown/invalid PR type
+            allowed_files = set()  # No files allowed for invalid PR type
             errors.append(f"Invalid PR type: submissions.txt exists={has_submissions}, valid={submissions_valid}, bot_pr={is_bot_pr}, new_site_files={len(new_site_files)}")
             pr_type = "invalid"
         
