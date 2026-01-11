@@ -269,8 +269,17 @@ def main() -> int:
                 
                 # Save generated site.yml
                 save_yaml(site_file, site_data)
-                generated_files.append(site_file)
-                print(f"✅ Generated: {site_file}")
+                # Verify file was written
+                if os.path.exists(site_file):
+                    with open(site_file, "r", encoding="utf-8") as f:
+                        written_content = f.read()
+                    if len(written_content) > 50:  # Should be much more than just a URL
+                        generated_files.append(site_file)
+                        print(f"✅ Generated: {site_file} ({len(written_content)} chars)")
+                    else:
+                        errors.append(f"- ❌ `{site_file}`: File written but content too short (only {len(written_content)} chars)")
+                else:
+                    errors.append(f"- ❌ `{site_file}`: File was not written")
                 
             except Exception as e:
                 errors.append(f"- ❌ `{site_file}`: Error generating site.yml: {e}")
